@@ -7,7 +7,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 ## ✨ Features
 
 - **🎨 Beautiful TV-Mode Interface** - Full-screen carousel with smooth animations
-- **🎮 Gamepad Support** - Navigate with Xbox/PlayStation controllers or keyboard
+- **🎮 Gamepad Support** - Navigate with Xbox/PlayStation controllers or keyboard/Bluetooth Tv Remotes
 - **🖼️ Automatic Image Downloads** - Fetches 16:9 cover art from SteamGridDB
 - **📱 Responsive Scaling** - Adapts to any screen resolution
 - **🔍 Smart Program Scanner** - Automatically detects installed applications
