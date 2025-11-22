@@ -225,6 +225,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **All**: Background images should be high resolution for best results
 - **Linux/Wayland**: Some scaling issues may occur, X11 recommended
 
-Made with ❤️ for couch gaming
-
 **Star ⭐ this repo if you find it useful!**
