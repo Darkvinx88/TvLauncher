@@ -17,25 +17,24 @@ A sleek, console-style application launcher for Windows with gamepad support and
 
 ## 📸 Screenshots
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/156b6e42-53de-4d20-8b98-ee90e8fbdf37" />
-
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e89a267a-052b-4df8-b546-3f12bff375a5" />
 
 *Carousel view with cover art*
 
-<img width="1920" height="1080" alt="Screenshot (253)" src="https://github.com/user-attachments/assets/04a30c38-4fbd-4d2d-af49-531c598e96af" />
+<img width="1920" height="1080" alt="Screenshot (253)" src="https://github.com/user-attachments/assets/1f9e19e3-02c9-476a-ab00-cafe8daadae9" />
+
 *Automatic program detection*
 
 ## 🔧 Requirements
 
-- **Windows** 10/11
-- **Linux**
+- **Windows** 10/11 or **Linux** (Ubuntu 20.04+, Fedora, Arch, etc.)
 - **Python** 3.8 or higher
 - **Dependencies**:
   - PyQt6
   - psutil
   - pygame (optional, for gamepad support)
   - requests (optional, for automatic image downloads)
-  - pywin32 (for shortcut scanning)
+  - pywin32 (Windows only, for shortcut scanning)
 
 ## 📦 Installation
 
@@ -46,13 +45,48 @@ cd tv-launcher
 ```
 
 ### 2. Install Dependencies
+
+**Windows:**
 ```bash
 pip install -r requirements.txt
 ```
 
+**Linux:**
+```bash
+# Install system dependencies first
+# Ubuntu/Debian:
+sudo apt-get update
+sudo apt-get install python3-pyqt6 python3-pip
+
+# Fedora:
+sudo dnf install python3-qt6 python3-pip
+
+# Arch:
+sudo pacman -S python-pyqt6 python-pip
+
+# Then install Python packages
+pip install -r requirements-linux.txt
+```
+
+### 3. Create Assets Folder
+```bash
+mkdir assets
+mkdir assets/icons
+```
+
 ### 4. Run the Launcher
+
+**Windows:**
 ```bash
 python tvlauncher.py
+```
+
+**Linux:**
+```bash
+python3 tvlauncher.py
+# or make it executable
+chmod +x tvlauncher.py
+./tvlauncher.py
 ```
 
 ## 🎮 Usage
@@ -144,21 +178,40 @@ tv-launcher/
 - Ensure pygame is installed: `pip install pygame`
 - Connect gamepad before launching
 - The launcher auto-detects gamepads every 5 seconds
+- **Linux**: Ensure your user has permission to access `/dev/input/` devices
+  ```bash
+  sudo usermod -a -G input $USER
+  # Log out and back in for changes to take effect
+  ```
 
 ### Images Not Downloading
-- Verify pygame is installed: `pip install requests`
+- Verify requests is installed: `pip install requests`
 - Check your SteamGridDB API key is valid
 - Ensure internet connection is active
 
 ### App Won't Launch
 - Verify the executable path is correct
 - Check file permissions
-- Try running as administrator
+- **Windows**: Try running as administrator
+- **Linux**: Ensure the binary has execute permissions (`chmod +x`)
 
 ### Scaling Issues
 - The launcher auto-scales to your resolution
 - Base resolution is 1920x1080
 - All UI elements scale proportionally
+- **Linux**: If using Wayland, some scaling issues may occur. Try X11 session.
+
+### Linux-Specific Issues
+
+**Missing Qt Platform Plugin:**
+```bash
+# Install Qt platform plugins
+# Ubuntu/Debian:
+sudo apt-get install qt6-qpa-plugins
+
+# Fedora:
+sudo dnf install qt6-qtbase-gui
+```
 
 ## 📝 License
 
@@ -172,10 +225,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🐛 Known Issues
 
-- Gamepad support requires pygame
-- Image downloads require requests library
-- Some executables may need administrator privileges
-- Background images should be high resolution for best results
+- **Windows**: Some executables may need administrator privileges
+- **All**: Background images should be high resolution for best results
+- **Linux/Wayland**: Some scaling issues may occur, X11 recommended
 
 Made with ❤️ for couch gaming
 
