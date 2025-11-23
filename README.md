@@ -94,7 +94,7 @@ python3 TvLauncher_Linux.py
 chmod +x TvLauncher_Linux.py
 ./TvLauncher_Linux.py
 ```
-you can easly create a .desktop file to run the launcher
+you can easly edit the included .desktop file to run the launcher
 
 ## 🎮 Usage
 
