@@ -120,7 +120,7 @@ you can easly edit the included .desktop file to run the launcher
    - Click the `+` icon in the top-right
    - Browse for the executable
    - Optionally add a custom image
-   - Insert the API Key Before adding any program for auto download to work
+   - Insert the API Key Before adding any program for auto-download to work
    - Click "Add"
 
 2. **Scan Installed Programs**
