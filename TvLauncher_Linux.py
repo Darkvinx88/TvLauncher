@@ -3,6 +3,7 @@ import json
 import subprocess
 import platform
 import os
+import requests
 from pathlib import Path
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
@@ -27,14 +28,6 @@ except ImportError:
     print("Warning: pygame not installed. Joystick support disabled.")
     print("Install with: pip install pygame")
 
-# Try to import requests for image downloading
-try:
-    import requests
-    REQUESTS_AVAILABLE = True
-except ImportError:
-    REQUESTS_AVAILABLE = False
-    print("Warning: requests not installed. Online image search disabled.")
-    print("Install with: pip install requests")
 
 # Detect OS
 IS_LINUX = platform.system() == "Linux"
@@ -81,7 +74,7 @@ class ImageManager:
         if local_image:
             return str(local_image)
         
-        if self.api_key and REQUESTS_AVAILABLE:
+        if self.api_key:
             online_image = self._download_from_steamgriddb(app_name)
             if online_image:
                 return str(online_image)
@@ -105,7 +98,7 @@ class ImageManager:
         return None
     
     def _download_from_steamgriddb(self, app_name):
-        if not self.api_key or not REQUESTS_AVAILABLE:
+        if not self.api_key:
             return None
         
         try:
@@ -689,7 +682,7 @@ class DownloadWorker(QThread):
             self.progress_update.emit(f"Downloading for: {prog['name']}...", percent)
             
             # Scarica immagine 16:9 (se API key c'è)
-            if self.image_manager.api_key and REQUESTS_AVAILABLE:
+            if self.image_manager.api_key:
                 image_result = self.image_manager.get_app_image(prog['name'], prog['path'])
                 if image_result:
                     prog['icon'] = image_result
@@ -2189,7 +2182,7 @@ class TVLauncher(QMainWindow):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             app_data = dialog.get_app_data()
             if app_data['name'] and app_data['path']:
-                if (not app_data['icon'] or app_data['icon'] == app_data['path']) and self.image_manager.api_key and REQUESTS_AVAILABLE:
+                if (not app_data['icon'] or app_data['icon'] == app_data['path']) and self.image_manager.api_key:
                     print(f"📥 Searching image for: {app_data['name']}")
                     
                     # NOTA: questo download singolo è ancora bloccante.
