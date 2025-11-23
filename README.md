@@ -49,8 +49,8 @@ https://github.com/user-attachments/assets/4dd6d86f-5606-47bd-aee5-2ff5c0afc82d
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Darkvinx88/tv-launcher.git
-cd tv-launcher
+git clone https://github.com/Darkvinx88/TvLauncher.git
+cd TvLauncher
 ```
 
 ### 2. Install Dependencies
