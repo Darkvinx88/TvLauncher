@@ -83,16 +83,16 @@ pip install -r requirements.txt
 
 **Windows:**
 ```bash
-python tvlauncher.py
+python tvlauncher_Windows.py
 ```
 bat file included for easier startup
 
 **Linux:**
 ```bash
-python3 tvlauncher.py
+python3 TvLauncher_linux.py
 # or make it executable
-chmod +x tvlauncher.py
-./tvlauncher.py
+chmod +x TvLauncher_linux.py
+./TvLauncher_linux.py
 ```
 you can easly create a .desktop file to run the launcher
 
