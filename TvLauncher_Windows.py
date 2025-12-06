@@ -1462,15 +1462,25 @@ class TVLauncher(QMainWindow):
         from datetime import datetime
         import locale
         try:
-            locale.setlocale(locale.LC_TIME, 'it_IT.UTF-8')
+            locale.setlocale(locale.LC_TIME, '')
         except:
             try:
-                locale.setlocale(locale.LC_TIME, 'Italian_Italy')
+                locale.setlocale(locale.LC_TIME, 'C')
             except:
                 pass
         now = datetime.now()
         time_str = now.strftime("%H:%M")
+        time_str = now.strftime("%X")
+        try:
+            test_time = now.strftime("%p")  # Returns AM/PM if locale uses 12-hour
+            if test_time:  # If AM/PM exists, use 12-hour format
+                time_str = now.strftime("%I:%M %p")
+            else:  # Otherwise use 24-hour format
+                time_str = now.strftime("%H:%M")
+        except:
+            time_str = now.strftime("%H:%M")  # Fallback to 24-hour
         date_str = now.strftime("%d %B %Y")
+
         parts = date_str.split()
         if len(parts) >= 2:
             parts[1] = parts[1].capitalize()
