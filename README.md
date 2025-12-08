@@ -140,10 +140,86 @@ you can easly edit the included .desktop file to run the launcher
    - Select an image file
    - The background updates immediately
 
+## 🚀 Autostart Setup
+
+### Windows Autostart
+
+TV Launcher can start automatically when Windows boots using either of these methods:
+
+#### Method 1: Startup Folder (Recommended)
+
+1. Press **Win + R** to open Run dialog
+2. Type `shell:startup` and press Enter
+3. Right-click your launcher `.bat` file → **Create shortcut**
+4. Drag the shortcut into the Startup folder that opened
+
+The launcher will now start automatically after login.
+
+**💡 Tip:** Right-click the shortcut → **Properties** → Set **Run: Minimized** to hide the console window on startup.
+
+#### Method 2: Windows Registry
+
+1. Create a file named `TVLauncher_Autostart.reg`
+2. Paste the following content:
+```reg
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run]
+"TVLauncher"="\"C:\\path\\to\\launch.bat\""
+```
+
+3. Replace `C:\\path\\to\\launch.bat` with your actual path
+4. Double-click the `.reg` file to add the registry entry
+
+The launcher will now start automatically on every boot.
+
+### Linux Autostart
+
+TV Launcher works with any Linux desktop environment (XFCE, GNOME, KDE, Cinnamon, MATE, etc.) using autostart desktop entries.
+
+#### Setup Instructions
+
+1. **Create the autostart directory** (if it doesn't exist):
+```bash
+mkdir -p ~/.config/autostart
+```
+
+2. **Create the autostart file**:
+```bash
+nano ~/.config/autostart/TVLauncher.desktop
+```
+
+3. **Add the following content**:
+```ini
+[Desktop Entry]
+Type=Application
+Name=TVLauncher
+Comment=Automatically start the TV Launcher on login
+Exec=/usr/bin/python3 /path/to/TvLauncher_Linux.py
+Path=/path/to/
+Terminal=false
+X-GNOME-Autostart-enabled=true
+```
+
+4. **Replace `/path/to/`** with the actual directory where TvLauncher_Linux.py is located
+
+5. **Make the file executable**:
+```bash
+chmod +x ~/.config/autostart/TVLauncher.desktop
+```
+
+#### Using a Virtual Environment?
+
+If you run the launcher from a Python virtual environment, change the `Exec` line to:
+```ini
+Exec=/path/to/venv/bin/python /path/to/TvLauncher_Linux.py
+```
+
+The launcher will now automatically start on login. ✅
+
 ## ⚙️ Configuration
 
 Configuration is stored in `launcher_apps.json`:
-
 ```json
 {
   "apps": [
@@ -162,7 +238,6 @@ Configuration is stored in `launcher_apps.json`:
 Images are stored in `assets/APP_NAME/banner.png` with automatic fallback to `.jpg`, `.jpeg`, or `.webp`.
 
 ## 📁 Project Structure
-
 ```
 tv-launcher/
 ├── tvlauncher.py          # Main application
@@ -187,10 +262,10 @@ tv-launcher/
 - Connect gamepad before launching
 - The launcher auto-detects gamepads every 5 seconds
 - **Linux**: Ensure your user has permission to access `/dev/input/` devices
-  ```bash
+```bash
   sudo usermod -a -G input $USER
   # Log out and back in for changes to take effect
-  ```
+```
 
 ### Images Not Downloading
 - Verify requests is installed: `pip install requests`
