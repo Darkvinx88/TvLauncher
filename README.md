@@ -17,19 +17,23 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
  ## 📸 Screenshots
 
 <img width="1920" height="1080" alt="Screenshot (267)" src="https://github.com/user-attachments/assets/ecaa5f5e-57c2-42e8-b52b-8c598f764541" />
+
 *Carousel view with cover art*
 
 
 
 <img width="1920" height="1080" alt="Screenshot (268)" src="https://github.com/user-attachments/assets/0ee987cb-a63f-4040-a61e-1e22719869dc" />
+
 *NEW: Quick Search feature*
 
 
 <img width="1920" height="1080" alt="Screenshot (269)" src="https://github.com/user-attachments/assets/19343c2d-14bd-4e16-8038-358816349abd" />
+
 *NEW: Reorder mode with visual indicators*
 
 
 <img width="1920" height="1080" alt="Screenshot (270)" src="https://github.com/user-attachments/assets/85fc341a-64b0-4ce5-b0ca-9936f44ea5fd" />
+
 *Automatic program detection*
 
 
