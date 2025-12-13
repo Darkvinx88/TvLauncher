@@ -221,6 +221,8 @@ chmod +x TvLauncher_Linux.py
 
 ## 🚀 Autostart Setup
 
+The Launcher can start at boot on both Windows and Linux
+
 ### Windows Autostart
 
 **Method 1: Startup Folder (Recommended)**
