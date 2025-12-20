@@ -1,55 +1,70 @@
+import os
+import platform
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-    QLineEdit, QListWidget, QListWidgetItem, QGraphicsDropShadowEffect
+    QLineEdit, QListWidget, QListWidgetItem, QGraphicsDropShadowEffect, QPushButton
 )
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPropertyAnimation, QEasingCurve, QRect
-from PyQt6.QtGui import QFont, QKeyEvent, QColor
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPropertyAnimation, QEasingCurve, QRect, QSize, QFileInfo
+from PyQt6.QtGui import QFont, QKeyEvent, QColor, QPixmap, QIcon
+from PyQt6.QtWidgets import QFileIconProvider
+
+IS_WINDOWS = platform.system() == "Windows"
+
+if IS_WINDOWS:
+    try:
+        import win32api
+        import win32con
+        import win32gui
+        import win32ui
+        HAS_WIN32 = True
+    except ImportError:
+        HAS_WIN32 = False
+        print("⚠️ win32api not available, icons will be basic")
+else:
+    HAS_WIN32 = False
 
 
 class QuickSearchWidget(QWidget):
     """
-    Widget di ricerca rapida con filtraggio live delle app.
-    Supporta tastiera fisica e navigazione con joypad/telecomando.
+    Quick search widget with live app filtering.
+    Supports keyboard and joypad/remote navigation.
+    Uses Qt Icon Theme Engine for optimal Linux performance.
     """
-    app_selected = pyqtSignal(int)  # Emette l'indice dell'app selezionata
-    search_closed = pyqtSignal()    # Emette quando la ricerca viene chiusa
+    app_selected = pyqtSignal(int)
+    search_closed = pyqtSignal()
     
     def __init__(self, scaling, parent=None):
         super().__init__(parent)
         self.scaling = scaling
-        self.apps = []  # Lista delle app da cercare
-        self.filtered_indices = []  # Indici delle app filtrate
+        self.apps = []
+        self.filtered_indices = []
         self.current_selection = 0
-        self.is_typing_mode = True  # True = digita, False = naviga risultati
+        self.is_typing_mode = True
         
-        # Riferimento al parent per gestire input joypad
         self.launcher_parent = parent
         
         self.init_ui()
         self.hide()
     
     def init_ui(self):
-        """Inizializza l'interfaccia utente"""
+        """Initialize UI with uniform palette"""
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         
-        # Dimensioni responsive
         width = self.scaling.scale(800)
         height = self.scaling.scale(600)
         self.setFixedSize(width, height)
         
-        # Container principale con sfondo scuro
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
         
-        # Container interno
         self.container = QWidget()
         self.container.setStyleSheet(f"""
             QWidget {{
-                background-color: rgba(20, 20, 20, 0.98);
+                background-color: #1a1a1a;
                 border-radius: {self.scaling.scale(20)}px;
-                border: {self.scaling.scale(2)}px solid rgba(255, 255, 255, 0.1);
+                border: {self.scaling.scale(2)}px solid #444;
             }}
         """)
         
@@ -65,52 +80,49 @@ class QuickSearchWidget(QWidget):
         # === HEADER ===
         header_layout = QHBoxLayout()
         
-        # Icona ricerca
         search_icon = QLabel("🔍")
         search_icon.setStyleSheet(f"""
             font-size: {self.scaling.scale_font(32)}px;
         """)
         header_layout.addWidget(search_icon)
         
-        # Campo di ricerca
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Type to search apps...")
         self.search_input.setStyleSheet(f"""
             QLineEdit {{
-                background-color: rgba(40, 40, 40, 0.8);
+                background-color: #2a2a2a;
                 color: white;
-                border: {self.scaling.scale(2)}px solid rgba(255, 255, 255, 0.2);
+                border: {self.scaling.scale(2)}px solid #444;
                 border-radius: {self.scaling.scale(12)}px;
                 padding: {self.scaling.scale(15)}px {self.scaling.scale(20)}px;
                 font-size: {self.scaling.scale_font(20)}px;
                 font-weight: 500;
             }}
             QLineEdit:focus {{
-                border: {self.scaling.scale(2)}px solid rgba(255, 255, 255, 0.5);
+                border: {self.scaling.scale(2)}px solid white;
             }}
         """)
         self.search_input.textChanged.connect(self.on_search_text_changed)
         header_layout.addWidget(self.search_input, stretch=1)
         
-        # Pulsante chiudi (CLICCABILE)
         self.close_btn = QPushButton("✕")
         self.close_btn.setStyleSheet(f"""
             QPushButton {{
-                background-color: rgba(255, 50, 50, 0.2);
+                background-color: #2a2a2a;
                 color: rgba(255, 255, 255, 0.7);
                 font-size: {self.scaling.scale_font(24)}px;
-                border: none;
+                border: {self.scaling.scale(2)}px solid #444;
                 border-radius: {self.scaling.scale(20)}px;
                 padding: {self.scaling.scale(8)}px;
                 min-width: {self.scaling.scale(40)}px;
                 min-height: {self.scaling.scale(40)}px;
             }}
             QPushButton:hover {{
-                background-color: rgba(255, 50, 50, 0.4);
+                background-color: #3a3a3a;
                 color: white;
             }}
             QPushButton:pressed {{
-                background-color: rgba(255, 50, 50, 0.6);
+                background-color: #444;
             }}
         """)
         self.close_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
@@ -119,10 +131,9 @@ class QuickSearchWidget(QWidget):
         
         container_layout.addLayout(header_layout)
         
-        # Mode indicator
         self.mode_label = QLabel("🔤 TYPING MODE")
         self.mode_label.setStyleSheet(f"""
-            color: rgba(100, 200, 255, 0.8);
+            color: rgba(255, 255, 255, 0.6);
             font-size: {self.scaling.scale_font(11)}px;
             font-weight: 600;
             padding: {self.scaling.scale(5)}px {self.scaling.scale(10)}px;
@@ -130,7 +141,6 @@ class QuickSearchWidget(QWidget):
         self.mode_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         container_layout.addWidget(self.mode_label)
         
-        # === RISULTATI ===
         results_label = QLabel("Results")
         results_label.setStyleSheet(f"""
             color: rgba(255, 255, 255, 0.6);
@@ -141,37 +151,37 @@ class QuickSearchWidget(QWidget):
         """)
         container_layout.addWidget(results_label)
         
-        # Lista risultati
         self.results_list = QListWidget()
+        self.results_list.setIconSize(QSize(32, 32))
         self.results_list.setStyleSheet(f"""
             QListWidget {{
-                background-color: rgba(30, 30, 30, 0.5);
-                border: {self.scaling.scale(1)}px solid rgba(255, 255, 255, 0.1);
+                background-color: #2a2a2a;
+                border: {self.scaling.scale(2)}px solid #444;
                 border-radius: {self.scaling.scale(12)}px;
                 padding: {self.scaling.scale(10)}px;
                 font-size: {self.scaling.scale_font(16)}px;
                 outline: none;
             }}
             QListWidget::item {{
-                color: rgba(255, 255, 255, 0.8);
+                color: rgba(255, 255, 255, 0.7);
                 padding: {self.scaling.scale(15)}px {self.scaling.scale(20)}px;
                 border-radius: {self.scaling.scale(8)}px;
                 margin: {self.scaling.scale(2)}px 0px;
             }}
             QListWidget::item:selected {{
-                background-color: rgba(255, 255, 255, 0.15);
+                background-color: #3a3a3a;
                 color: white;
                 font-weight: 600;
-                border: {self.scaling.scale(2)}px solid rgba(255, 255, 255, 0.3);
+                border: {self.scaling.scale(2)}px solid white;
             }}
             QListWidget::item:hover {{
-                background-color: rgba(255, 255, 255, 0.08);
+                background-color: #333;
             }}
         """)
         self.results_list.itemDoubleClicked.connect(self.on_item_activated)
         container_layout.addWidget(self.results_list, stretch=1)
         
-        # === FOOTER - Istruzioni ===
+        # === FOOTER ===
         instructions_layout = QHBoxLayout()
         instructions_layout.setSpacing(self.scaling.scale(20))
         
@@ -191,10 +201,11 @@ class QuickSearchWidget(QWidget):
             
             key_label = QLabel(key)
             key_label.setStyleSheet(f"""
-                background-color: rgba(255, 255, 255, 0.1);
-                color: rgba(255, 255, 255, 0.9);
+                background-color: #2a2a2a;
+                color: white;
                 padding: {self.scaling.scale(4)}px {self.scaling.scale(10)}px;
                 border-radius: {self.scaling.scale(6)}px;
+                border: {self.scaling.scale(1)}px solid #444;
                 font-size: {self.scaling.scale_font(12)}px;
                 font-weight: 600;
             """)
@@ -215,7 +226,6 @@ class QuickSearchWidget(QWidget):
         main_layout.addWidget(self.container)
         self.setLayout(main_layout)
         
-        # Shadow effect
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(self.scaling.scale(50))
         shadow.setColor(QColor(0, 0, 0, 200))
@@ -223,14 +233,13 @@ class QuickSearchWidget(QWidget):
         self.container.setGraphicsEffect(shadow)
     
     def set_apps(self, apps):
-        """Imposta la lista di app da cercare"""
+        """Set app list to search"""
         self.apps = apps
         self.update_results()
     
     def show_search(self):
-        """Mostra il widget di ricerca con animazione"""
+        """Show search widget with animation"""
         if self.parent():
-            # Centra rispetto al parent
             parent_rect = self.parent().geometry()
             x = (parent_rect.width() - self.width()) // 2
             y = (parent_rect.height() - self.height()) // 2
@@ -239,7 +248,6 @@ class QuickSearchWidget(QWidget):
         self.show()
         self.raise_()
         
-        # Reset stato
         self.search_input.clear()
         self.search_input.setFocus()
         self.is_typing_mode = True
@@ -247,7 +255,6 @@ class QuickSearchWidget(QWidget):
         self.update_mode_indicator()
         self.update_results()
         
-        # Animazione entrata
         self.setWindowOpacity(0)
         fade_in = QPropertyAnimation(self, b"windowOpacity")
         fade_in.setDuration(200)
@@ -258,7 +265,7 @@ class QuickSearchWidget(QWidget):
         self.fade_animation = fade_in
     
     def close_search(self):
-        """Chiude il widget di ricerca con animazione"""
+        """Close search widget with animation"""
         fade_out = QPropertyAnimation(self, b"windowOpacity")
         fade_out.setDuration(150)
         fade_out.setStartValue(1.0)
@@ -270,61 +277,135 @@ class QuickSearchWidget(QWidget):
         self.fade_animation = fade_out
     
     def on_search_text_changed(self, text):
-        """Gestisce il cambio del testo di ricerca"""
+        """Handle search text change"""
         self.update_results()
-        # Auto-switch to typing mode quando si digita
         if text and not self.is_typing_mode:
             self.is_typing_mode = True
             self.update_mode_indicator()
     
+    def _load_icon_from_theme(self, app_data):
+        """Load icon using Qt Icon Theme Engine - OPTIMIZED"""
+        # Try multiple icon fields for compatibility
+        icon_value = app_data.get('icon_name') or app_data.get('icon')
+        
+        if not icon_value:
+            # LAST RESORT: Extract from path
+            path = app_data.get('path', '')
+            if path:
+                # Get command name from path
+                if ' ' in path:
+                    cmd = path.split()[0]
+                else:
+                    cmd = path
+                icon_value = os.path.basename(cmd)
+        
+        if not icon_value:
+            return QIcon()
+        
+        if IS_WINDOWS:
+            # Windows: extract from exe or load file
+            if os.path.exists(icon_value):
+                if icon_value.lower().endswith('.exe'):
+                    provider = QFileIconProvider()
+                    file_info = QFileInfo(icon_value)
+                    return provider.icon(file_info)
+                else:
+                    return QIcon(icon_value)
+            return QIcon()
+        else:
+            # Linux: Qt Icon Theme Engine (FAST!)
+            # FIRST: Try as theme icon name (most common case)
+            icon = QIcon.fromTheme(icon_value)
+            if not icon.isNull():
+                return icon
+            
+            # SECOND: If it's an absolute path, load directly
+            if os.path.isabs(icon_value):
+                if os.path.exists(icon_value):
+                    return QIcon(icon_value)
+                # Try with extensions if path doesn't exist
+                for ext in ['.png', '.svg', '.xpm']:
+                    if os.path.exists(icon_value + ext):
+                        return QIcon(icon_value + ext)
+            
+            # THIRD: Try fromTheme with extensions
+            for ext in ['.png', '.svg', '.xpm', '']:
+                test_icon = QIcon.fromTheme(icon_value + ext)
+                if not test_icon.isNull():
+                    return test_icon
+            
+            # FOURTH: Extract icon name from path and try again
+            if '/' in icon_value or '\\' in icon_value:
+                icon_name = os.path.basename(icon_value)
+                # Remove extension
+                icon_name = os.path.splitext(icon_name)[0]
+                icon = QIcon.fromTheme(icon_name)
+                if not icon.isNull():
+                    return icon
+            
+            return QIcon()
+    
     def update_results(self):
-        """Aggiorna la lista dei risultati in base alla ricerca"""
+        """Update results list based on search WITH ICON THEME"""
         search_text = self.search_input.text().lower().strip()
         
         self.results_list.clear()
         self.filtered_indices = []
 
-        temp_results = []  # (app_name, index)
+        temp_results = []
 
         if not search_text:
-            # Mostra tutte le app
             for i, app in enumerate(self.apps):
-                temp_results.append((app["name"], i))
+                temp_results.append((app["name"], i, app))
         else:
-            # Filtra
             for i, app in enumerate(self.apps):
                 app_name = app['name']
                 if search_text in app_name.lower():
-                    temp_results.append((app_name, i))
+                    temp_results.append((app_name, i, app))
 
-        # 📌 ORDINA ALFABETICAMENTE
+        # Sort alphabetically
         temp_results.sort(key=lambda x: x[0].lower())
 
-        # Aggiungi alla QListWidget dopo l'ordinamento
-        for name, original_index in temp_results:
-            item = QListWidgetItem(f"🎮  {name}")
+        # Add to QListWidget with icons
+        for name, original_index, app_data in temp_results:
+            item = QListWidgetItem(name)
             item.setData(Qt.ItemDataRole.UserRole, original_index)
+            
+            # Load icon using Qt Icon Theme (FAST!)
+            icon = self._load_icon_from_theme(app_data)
+            
+            # DEBUG: Print if icon not found
+            if icon.isNull():
+                print(f"⚠️  No icon for '{name}':")
+                print(f"   icon: {app_data.get('icon')}")
+                print(f"   icon_name: {app_data.get('icon_name')}")
+            
+            if not icon.isNull():
+                item.setIcon(icon)
+            else:
+                # Fallback emoji if no icon
+                item.setText(f"🎮  {name}")
+            
             self.results_list.addItem(item)
             self.filtered_indices.append(original_index)
 
-        # Seleziona primo risultato
+        # Select first result
         if self.results_list.count() > 0:
             self.current_selection = 0
             self.results_list.setCurrentRow(0)
 
-        # Nessun risultato
+        # No results
         if self.results_list.count() == 0:
             item = QListWidgetItem("❌  No apps found")
             item.setFlags(Qt.ItemFlag.NoItemFlags)
             self.results_list.addItem(item)
-
     
     def update_mode_indicator(self):
-        """Aggiorna l'indicatore della modalità"""
+        """Update mode indicator"""
         if self.is_typing_mode:
             self.mode_label.setText("🔤 TYPING MODE")
             self.mode_label.setStyleSheet(f"""
-                color: rgba(100, 200, 255, 0.8);
+                color: white;
                 font-size: {self.scaling.scale_font(11)}px;
                 font-weight: 600;
                 padding: {self.scaling.scale(5)}px {self.scaling.scale(10)}px;
@@ -332,14 +413,14 @@ class QuickSearchWidget(QWidget):
         else:
             self.mode_label.setText("🎯 NAVIGATION MODE")
             self.mode_label.setStyleSheet(f"""
-                color: rgba(100, 255, 150, 0.8);
+                color: rgba(255, 255, 255, 0.6);
                 font-size: {self.scaling.scale_font(11)}px;
                 font-weight: 600;
                 padding: {self.scaling.scale(5)}px {self.scaling.scale(10)}px;
             """)
     
     def switch_mode(self):
-        """Cambia tra modalità digitazione e navigazione"""
+        """Switch between typing and navigation mode"""
         self.is_typing_mode = not self.is_typing_mode
         self.update_mode_indicator()
         
@@ -349,29 +430,27 @@ class QuickSearchWidget(QWidget):
             self.results_list.setFocus()
     
     def navigate_up(self):
-        """Naviga verso l'alto nei risultati"""
+        """Navigate up in results"""
         if self.results_list.count() > 0:
             current = self.results_list.currentRow()
             prev_row = max(current - 1, 0)
             self.results_list.setCurrentRow(prev_row)
-            # Auto-switch a navigation mode
             if self.is_typing_mode:
                 self.is_typing_mode = False
                 self.update_mode_indicator()
     
     def navigate_down(self):
-        """Naviga verso il basso nei risultati"""
+        """Navigate down in results"""
         if self.results_list.count() > 0:
             current = self.results_list.currentRow()
             next_row = min(current + 1, self.results_list.count() - 1)
             self.results_list.setCurrentRow(next_row)
-            # Auto-switch a navigation mode
             if self.is_typing_mode:
                 self.is_typing_mode = False
                 self.update_mode_indicator()
     
     def launch_selected(self):
-        """Lancia l'app selezionata"""
+        """Launch selected app"""
         if self.results_list.count() > 0 and self.filtered_indices:
             current_row = self.results_list.currentRow()
             if 0 <= current_row < len(self.filtered_indices):
@@ -380,7 +459,7 @@ class QuickSearchWidget(QWidget):
                 self.close_search()
     
     def on_item_activated(self, item):
-        """Gestisce il doppio click o Enter su un item"""
+        """Handle double click or Enter on item"""
         if item and item.flags() & Qt.ItemFlag.ItemIsEnabled:
             app_index = item.data(Qt.ItemDataRole.UserRole)
             if app_index is not None:
@@ -388,7 +467,7 @@ class QuickSearchWidget(QWidget):
                 self.close_search()
     
     def handle_joypad_input(self, key_code):
-        """Gestisce gli input dal joypad (chiamato dal parent)"""
+        """Handle joypad input (called by parent)"""
         if key_code == Qt.Key.Key_Escape:
             self.close_search()
         elif key_code == Qt.Key.Key_Up:
@@ -397,36 +476,31 @@ class QuickSearchWidget(QWidget):
             self.navigate_down()
         elif key_code == Qt.Key.Key_Return or key_code == Qt.Key.Key_Enter:
             self.launch_selected()
-        elif key_code == Qt.Key.Key_E:  # X button per cambio modalità
+        elif key_code == Qt.Key.Key_E:  # X button for mode switch
             self.switch_mode()
         elif key_code == Qt.Key.Key_Backspace:
-            # Backspace in navigation mode torna a typing
             if not self.is_typing_mode:
                 self.is_typing_mode = True
                 self.search_input.setFocus()
                 self.update_mode_indicator()
     
     def keyPressEvent(self, event: QKeyEvent):
-        """Gestisce gli input da tastiera"""
+        """Handle keyboard input"""
         key = event.key()
         
-        # Esc chiude sempre
         if key == Qt.Key.Key_Escape:
             self.close_search()
             return
         
-        # Tab cambia modalità
         if key == Qt.Key.Key_Tab:
             self.switch_mode()
             event.accept()
             return
         
-        # Enter lancia l'app selezionata
         if key == Qt.Key.Key_Return or key == Qt.Key.Key_Enter:
             self.launch_selected()
             return
         
-        # Navigazione risultati (sempre attiva)
         if key == Qt.Key.Key_Down:
             self.navigate_down()
             event.accept()
@@ -437,21 +511,14 @@ class QuickSearchWidget(QWidget):
             event.accept()
             return
         
-        # Backspace in navigation mode torna a typing mode
         if key == Qt.Key.Key_Backspace and not self.is_typing_mode:
             self.is_typing_mode = True
             self.search_input.setFocus()
             self.update_mode_indicator()
-            # Lascia che il backspace venga processato normalmente
         
-        # Qualsiasi altro carattere in navigation mode passa a typing mode
         if not self.is_typing_mode and event.text().isprintable():
             self.is_typing_mode = True
             self.search_input.setFocus()
             self.update_mode_indicator()
         
         super().keyPressEvent(event)
-
-
-# Importa QPushButton che mancava
-from PyQt6.QtWidgets import QPushButton

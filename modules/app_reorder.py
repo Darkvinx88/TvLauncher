@@ -168,8 +168,7 @@ class ReorderMode:
                         font-size: {self.launcher.scaling.scale_font(32)}px;
                         font-weight: bold;
                         border-radius: {self.launcher.scaling.scale(25)}px;
-                        border: {self.launcher.scaling.scale(3)}px solid white;
-                        padding: {self.launcher.scaling.scale(5)}px;
+                        border: {self.launcher.scaling.scale(2)}px solid white;
                     }}
                 """)
                 
