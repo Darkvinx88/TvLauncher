@@ -320,34 +320,6 @@ Images are stored in `assets/APP_NAME/banner.{png|jpg|jpeg|webp}` with automatic
 ### Portable Mode
 The Windows version is fully portable - all paths are relative to the launcher directory. Simply move the entire folder to run from anywhere (USB drive, network share, etc.).
 
-## 📁 Project Structure
-
-```
-tv-launcher/
-├── TvLauncher_Windows.py     # Main application (Windows)
-├── TvLauncher_Linux.py        # Main application (Linux)
-├── modules/
-│   ├── app_reorder.py        # Reordering functionality
-│   ├── search_widget.py      # Quick search widget
-│   ├── program_scanner.py    # Program detection with caching
-│   └── joystick_notification.py  # Controller connection notifications
-├── launcher_apps.json         # Configuration (auto-generated)
-├── scanner_cache_windows.json # Program scanner cache (Windows)
-├── scanner_cache_linux.json   # Program scanner cache (Linux)
-├── requirements.txt           # Python dependencies
-├── assets/
-│   ├── icons/                 # UI icons
-│   │   ├── key.png
-│   │   ├── search.png
-│   │   ├── plus.png
-│   │   ├── download.png       # Manual cover download
-│   │   ├── image.png
-│   │   └── logo48.png
-│   └── [app_name]/            # Per-app folders
-│       └── banner.png         # 16:9 cover art
-└── README.md
-```
-
 ## 🛠️ Troubleshooting
 
 ### Gamepad Not Detected
