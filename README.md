@@ -36,7 +36,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 
 *Automatic program detection*
 
-https://github.com/user-attachments/assets/1aac1d16-857c-4944-a14c-03bfd4be57cc 
+https://github.com/user-attachments/assets/a827225f-9d14-4dcd-a48d-282d3d7d295a
 
 *In motion*
 
