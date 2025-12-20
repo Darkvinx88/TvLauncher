@@ -11,67 +11,61 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 ### 🎨 Beautiful Interface
 - **Full-screen TV-Mode** - Console-style carousel with smooth animations
 - **Responsive Scaling** - Automatically adapts to any screen resolution (from 720p to 4K+)
-- **Custom Backgrounds** - Personalize with your own wallpapers
-- **Locale Adaptive Clock** - Displays current time and date
 - **Gamepad Support** - Navigate with Xbox/PlayStation controllers or keyboard/Bluetooth TV Remotes
 - **Automatic Image Downloads** - Fetches 16:9 cover art from SteamGridDB
-- **Smart Program Scanner** - Automatically detects installed applications
+- **Smart Program Scanner** - Automatically detects installed applications with proper icon extraction
 - **Quick Search Widget** - Instant app filtering with F/LB
 - **Drag & Drop Reordering** - Reorganize apps with R/RB
 - **System Controls** - Built-in Restart/Shutdown/Sleep options
 
-
- ## 📸 Screenshots
+## 📸 Screenshots
 
 <img width="1920" height="1080" alt="Screenshot (267)" src="https://github.com/user-attachments/assets/ecaa5f5e-57c2-42e8-b52b-8c598f764541" />
 
 *Carousel view with cover art*
 
-
-
 <img width="1920" height="1080" alt="Screenshot (268)" src="https://github.com/user-attachments/assets/0ee987cb-a63f-4040-a61e-1e22719869dc" />
 
-*NEW: Quick Search feature*
-
+*Quick Search feature*
 
 <img width="1920" height="1080" alt="Screenshot (269)" src="https://github.com/user-attachments/assets/19343c2d-14bd-4e16-8038-358816349abd" />
 
-*NEW: Reorder mode with visual indicators*
-
+*Reorder mode with visual indicators*
 
 <img width="1920" height="1080" alt="Screenshot (270)" src="https://github.com/user-attachments/assets/85fc341a-64b0-4ce5-b0ca-9936f44ea5fd" />
 
 *Automatic program detection*
 
-
-
 https://github.com/user-attachments/assets/1aac1d16-857c-4944-a14c-03bfd4be57cc 
 
 *In motion*
-
-
 
 ### 🎮 Input Support
 - **Gamepad Compatible** - Xbox, PlayStation, or any standard controller
 - **Keyboard Navigation** - Full keyboard support
 - **TV Remote Support** - Works with Bluetooth TV remotes
-- **Auto-detection** - Automatically detects connected gamepads
+- **Auto-detection** - Automatically detects connected gamepads with visual notifications
 
 ### 🔍 Smart Organization
-- **Quick Search** (NEW!) - Press `F` or `LB` to instantly search your apps
+- **Quick Search** - Press `F` or `LB` to instantly search your apps
   - Live filtering as you type
   - Alphabetically sorted results
   - Two modes: Typing & Navigation
   - Keyboard and gamepad support
-- **Drag & Drop Reordering** (NEW!) - Press `R` or `RB` to rearrange apps
+- **Drag & Drop Reordering** - Press `R` or `RB` to rearrange apps
   - Press `Enter`/`A` to activate reorder mode
   - Visual position indicators
   - Supports both linear and circular navigation
 - **Smart Program Scanner** - Automatically detects installed applications
+  - Cached results for instant loading
+  - Proper icon extraction from executables
+  - Alphabetically sorted display
 - **Edit & Delete** - Manage your app library easily
 
 ### 🖼️ Automatic Image Management
 - **SteamGridDB Integration** - Auto-downloads 16:9 cover art
+- **Manual Download Button** - Download covers for existing apps at any time
+- **Smart Auto-download Logic** - Automatically fetches images when adding apps
 - **Local Image Support** - Use your own custom images
 - **Smart Fallback** - Uses exe icons if images unavailable
 - **Optimized Loading** - Cached pixmaps for smooth performance
@@ -80,6 +74,16 @@ https://github.com/user-attachments/assets/1aac1d16-857c-4944-a14c-03bfd4be57cc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 - **Process Monitoring** - Auto-detects when launched apps close
 - **Input Management** - Automatically disables controls when app is running
+
+## 🆕 Recent Updates
+
+### Latest Version
+- ✅ **Controller Connection Banners** - Visual notifications when gamepads connect/disconnect (Windows)
+- ✅ **Manual Cover Download** - New button to download covers for existing apps
+- ✅ **Improved Auto-download Logic** - Smarter image fetching when adding programs
+- ✅ **Program Scanner Enhancements** - Cached results and proper icon extraction
+- ✅ **Performance Improvements** - Initial refactoring for faster loading
+- ✅ **Portable Mode** - Fully portable Windows version (no python install needed)
 
 ## 🔧 Requirements
 
@@ -91,7 +95,7 @@ https://github.com/user-attachments/assets/1aac1d16-857c-4944-a14c-03bfd4be57cc
 - `psutil` - Process management
 - `pygame` (optional) - Gamepad support
 - `requests` (optional) - Automatic image downloads
-- `pywin32` (Windows only) - Shortcut scanning
+- `pywin32` (Windows only) - Shortcut scanning and icon extraction
 
 ## 📦 Installation
 
@@ -149,8 +153,8 @@ chmod +x TvLauncher_Linux.py
 | `←` `→` | Navigate carousel |
 | `↑` `↓` | Navigate menus / system controls |
 | `Enter` | Launch app |
-| **`F`** | **Open Quick Search (NEW!)** |
-| **`R`** | **Toggle Reorder Mode (NEW!)** |
+| **`F`** | **Open Quick Search** |
+| **`R`** | **Toggle Reorder Mode** |
 | `E` | Edit current app |
 | `Delete` | Remove current app |
 | `Tab` | Switch search mode (when searching) |
@@ -164,8 +168,8 @@ chmod +x TvLauncher_Linux.py
 | `B` | Back / Cancel |
 | `X` | Edit app / Switch mode (in search) |
 | `Y` | Delete app |
-| **`LB`** | **Open Quick Search (NEW!)** |
-| **`RB`** | **Toggle Reorder Mode (NEW!)** |
+| **`LB`** | **Open Quick Search** |
+| **`RB`** | **Toggle Reorder Mode** |
 
 ## 🚀 Quick Start Guide
 
@@ -174,7 +178,7 @@ chmod +x TvLauncher_Linux.py
 1. **Add Your First App**
    - Click the `+` icon in the top-right
    - Browse for the executable
-   - Insert the API Key Before adding any program for auto-download to work
+   - Insert the API Key before adding any program for auto-download to work
    - Optionally add a custom image
    - Click "Add"
 
@@ -186,17 +190,23 @@ chmod +x TvLauncher_Linux.py
 
 3. **Scan Installed Programs**
    - Click the `🔍` icon
-   - Wait for the scan to complete (may take a minute)
+   - Wait for the scan to complete (may take a minute on first run)
+   - Results are cached for instant loading next time
    - Select programs to add
    - Click "Add Selected"
    - Images download automatically in background
 
-4. **Customize Background**
+4. **Download Covers for Existing Apps**
+   - Click the `⬇️` download icon in the header
+   - Select which apps need covers
+   - Covers download automatically from SteamGridDB
+
+5. **Customize Background**
    - Click the `🖼️` icon
    - Select an image file (16:9 recommended)
    - Background updates immediately
 
-### NEW: Using Quick Search
+### Using Quick Search
 
 1. Press `F` (keyboard) or `LB` (gamepad) anywhere
 2. Start typing to filter apps (Typing Mode)
@@ -205,14 +215,14 @@ chmod +x TvLauncher_Linux.py
 5. Press `Enter` or `A` to launch selected app
 6. Press `Esc` or `B` to close search
 
-### NEW: Reordering Apps
+### Reordering Apps
 
-**Method 1: Quick Toggle**
+**Quick Toggle Method:**
 1. Press `R` (keyboard) or `RB` (gamepad)
 2. Use `←`/`→` to move the app to desired position
 3. Press `Enter`/`A` to confirm or `Esc`/`B` to cancel
 
- **Features:**
+**Features:**
 - Gold border shows selected app
 - Blue border shows target position
 - Position numbers appear on each tile
@@ -228,7 +238,7 @@ The Launcher can start at boot on both Windows and Linux
 **Method 1: Startup Folder (Recommended)**
 1. Press `Win + R` to open Run dialog
 2. Type `shell:startup` and press Enter
-3. Right-click your launcher `.bat` file → Create shortcut
+3. Right-click your launcher `.bat` or `.exe` file → Create shortcut
 4. Drag the shortcut into the Startup folder
 5. ✅ Launcher will start automatically after login
 
@@ -307,6 +317,9 @@ Configuration is stored in `launcher_apps.json`:
 ### Image Organization
 Images are stored in `assets/APP_NAME/banner.{png|jpg|jpeg|webp}` with automatic fallback.
 
+### Portable Mode
+The Windows version is fully portable - all paths are relative to the launcher directory. Simply move the entire folder to run from anywhere (USB drive, network share, etc.).
+
 ## 📁 Project Structure
 
 ```
@@ -314,15 +327,20 @@ tv-launcher/
 ├── TvLauncher_Windows.py     # Main application (Windows)
 ├── TvLauncher_Linux.py        # Main application (Linux)
 ├── modules/
-│   ├── app_reorder.py        # NEW: Reordering functionality
-│   └── search_widget.py       # NEW: Quick search widget
+│   ├── app_reorder.py        # Reordering functionality
+│   ├── search_widget.py      # Quick search widget
+│   ├── program_scanner.py    # Program detection with caching
+│   └── joystick_notification.py  # Controller connection notifications
 ├── launcher_apps.json         # Configuration (auto-generated)
+├── scanner_cache_windows.json # Program scanner cache (Windows)
+├── scanner_cache_linux.json   # Program scanner cache (Linux)
 ├── requirements.txt           # Python dependencies
 ├── assets/
 │   ├── icons/                 # UI icons
 │   │   ├── key.png
 │   │   ├── search.png
 │   │   ├── plus.png
+│   │   ├── download.png       # Manual cover download
 │   │   ├── image.png
 │   │   └── logo48.png
 │   └── [app_name]/            # Per-app folders
@@ -336,6 +354,7 @@ tv-launcher/
 - Ensure `pygame` is installed: `pip install pygame`
 - Connect gamepad before launching
 - Launcher auto-detects gamepads every 5 seconds
+- Controller connection notifications appear when detected (Windows)
 - **Linux:** Ensure user has permission to access `/dev/input/`:
   ```bash
   sudo usermod -a -G input $USER
@@ -346,6 +365,7 @@ tv-launcher/
 - Verify `requests` is installed: `pip install requests`
 - Check SteamGridDB API key is valid
 - Ensure internet connection is active
+- Try the manual download button (⬇️ icon) for existing apps
 - Images download in background thread (check console for errors)
 
 ### App Won't Launch
@@ -362,6 +382,12 @@ tv-launcher/
 ### Reorder Mode Not Activating
 - Try pressing `R` or `RB` to toggle
 - Cannot activate during menu, dialogs, or when no apps exist
+
+### Program Scanner Issues
+- First scan may take 1-2 minutes
+- Results are cached in `scanner_cache_*.json`
+- Click refresh button (↻) to force rescan
+- **Windows:** Ensure `pywin32` is installed for icon extraction
 
 ### Scaling Issues
 - Launcher auto-scales to your resolution
