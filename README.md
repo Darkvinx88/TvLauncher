@@ -20,19 +20,19 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 
 ## 📸 Screenshots
 
-<img width="1920" height="1080" alt="Screenshot (267)" src="https://github.com/user-attachments/assets/ecaa5f5e-57c2-42e8-b52b-8c598f764541" />
+<img width="1920" height="1080" alt="Screenshot (275)" src="https://github.com/user-attachments/assets/27e8cb96-49e2-4f69-8543-e99e303cf4ab" />
 
 *Carousel view with cover art*
 
-<img width="1920" height="1080" alt="Screenshot (268)" src="https://github.com/user-attachments/assets/0ee987cb-a63f-4040-a61e-1e22719869dc" />
+<img width="1920" height="1080" alt="Screenshot (276)" src="https://github.com/user-attachments/assets/eee826a9-94c1-493d-bdfb-77539611abc7" />
 
 *Quick Search feature*
 
-<img width="1920" height="1080" alt="Screenshot (269)" src="https://github.com/user-attachments/assets/19343c2d-14bd-4e16-8038-358816349abd" />
+<img width="1920" height="1080" alt="Screenshot (278)" src="https://github.com/user-attachments/assets/7bbe9023-4762-4f12-b59a-3f4981dad55a" />
 
 *Reorder mode with visual indicators*
 
-<img width="1920" height="1080" alt="Screenshot (270)" src="https://github.com/user-attachments/assets/85fc341a-64b0-4ce5-b0ca-9936f44ea5fd" />
+<img width="1920" height="1080" alt="Screenshot (277)" src="https://github.com/user-attachments/assets/8a5f00e4-2983-433a-9d53-436bbb440d4c" />
 
 *Automatic program detection*
 
