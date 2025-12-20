@@ -20,6 +20,19 @@ import psutil
 
 from modules.app_reorder import integrate_reorder_mode
 from modules.search_widget import QuickSearchWidget
+from modules.program_scanner import ProgramScanner, ProgramScanDialog
+
+# === FIX PATH PER AMBIENTE EMBEDDED ===
+if getattr(sys, 'frozen', False):
+    # Se è un bundle/executable
+    BASE_DIR = Path(sys.executable).parent
+else:
+    # Se è script Python normale
+    BASE_DIR = Path(__file__).parent
+
+# Cambia la directory di lavoro
+os.chdir(BASE_DIR)
+
 
 # Try to import pygame for joystick support
 try:
@@ -172,7 +185,7 @@ class ApiKeyDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("SteamGridDB API Key")
         self.setModal(True)
-        self.setFixedSize(600, 300)
+        self.setFixedSize(600, 350)
         self.setStyleSheet("""
             QDialog { background-color: #1a1a1a; }
             QLabel { color: white; font-size: 14px; }
@@ -322,337 +335,6 @@ def rounded_pixmap(original_path, width, height, radius=24):
     return result
 
 
-class ProgramScanner(QThread):
-    program_found = pyqtSignal(dict)
-    scan_complete = pyqtSignal()
-    progress_update = pyqtSignal(str)
-
-    def __init__(self):
-        super().__init__()
-    
-    def run(self):
-        seen_names = set()
-        
-        desktop_dirs = [
-            "/usr/share/applications",
-            "/usr/local/share/applications",
-            os.path.expanduser("~/.local/share/applications"),
-            "/var/lib/snapd/desktop/applications",
-            "/var/lib/flatpak/exports/share/applications",
-            os.path.expanduser("~/.local/share/flatpak/exports/share/applications")
-        ]
-        
-        for desktop_dir in desktop_dirs:
-            if not os.path.exists(desktop_dir):
-                continue
-                
-            try:
-                for filename in os.listdir(desktop_dir):
-                    if not filename.endswith('.desktop'):
-                        continue
-                    
-                    desktop_file = os.path.join(desktop_dir, filename)
-                    
-                    try:
-                        app_data = self._parse_desktop_file(desktop_file)
-                        if app_data and app_data['name'].lower() not in seen_names:
-                            seen_names.add(app_data['name'].lower())
-                            self.progress_update.emit(f"Found: {app_data['name']}")
-                            self.program_found.emit(app_data)
-                    except Exception as e:
-                        print(f"Error parsing {desktop_file}: {e}")
-                        continue
-            except Exception as e:
-                print(f"Error scanning {desktop_dir}: {e}")
-                continue
-        
-        self.scan_complete.emit()
-    
-    def _parse_desktop_file(self, filepath):
-        name = None
-        exec_path = None
-        icon = None
-        no_display = False
-        
-        try:
-            with open(filepath, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    
-                    if line.startswith('Name=') and not name:
-                        name = line.split('=', 1)[1]
-                    elif line.startswith('Exec='):
-                        exec_cmd = line.split('=', 1)[1]
-                        exec_cmd = exec_cmd.replace('%U', '').replace('%F', '').replace('%u', '').replace('%f', '')
-                        exec_path = exec_cmd.strip()
-                    elif line.startswith('Icon='):
-                        icon = line.split('=', 1)[1]
-                    elif line.startswith('NoDisplay=true'):
-                        no_display = True
-                    elif line.startswith('Terminal=true'):
-                        no_display = True # Escludi app terminale
-            
-            if no_display or not name or not exec_path:
-                return None
-            
-            # Prova a risolvere il comando
-            if ' ' in exec_path:
-                exec_path_cmd = exec_path.split(' ')[0]
-            else:
-                exec_path_cmd = exec_path
-            
-            # Cerca il comando nel PATH se non è un percorso assoluto
-            if not os.path.isabs(exec_path_cmd):
-                import shutil
-                full_path = shutil.which(exec_path_cmd)
-                if full_path:
-                    # Ricostruisci il comando exec con il percorso completo
-                    exec_path = exec_path.replace(exec_path_cmd, full_path, 1)
-                else:
-                    print(f"Command not found in PATH: {exec_path_cmd} (da {exec_path})")
-                    return None # Non possiamo lanciare un comando non trovato
-            
-            # Controlla l'esistenza del file solo se non ci sono argomenti
-            if ' ' not in exec_path and not os.path.exists(exec_path):
-                 print(f"Invalid .desktop path: {exec_path}")
-                 return None
-
-            icon_path = self._find_icon(icon) if icon else None
-            
-            return {
-                'name': name,
-                'path': exec_path, # Usa il comando 'Exec' completo
-                'icon': icon_path or exec_path_cmd # Fallback al comando se l'icona non si trova
-            }
-        
-        except Exception as e:
-            print(f"Error reading {filepath}: {e}")
-            return None
-    
-    def _find_icon(self, icon_name):
-        if not icon_name:
-            return None
-        
-        # Se è già un percorso assoluto
-        if os.path.isabs(icon_name) and os.path.exists(icon_name):
-            return icon_name
-        
-        # Se è un percorso assoluto ma senza estensione
-        if os.path.isabs(icon_name) and not os.path.exists(icon_name):
-            for ext in ['.png', '.svg', '.xpm']:
-                if os.path.exists(f"{icon_name}{ext}"):
-                    return f"{icon_name}{ext}"
-
-        # Cerca nei temi e percorsi standard
-        icon_dirs = [
-            "/usr/share/icons/hicolor/scalable/apps",
-            "/usr/share/icons/hicolor/512x512/apps",
-            "/usr/share/icons/hicolor/256x256/apps",
-            "/usr/share/icons/hicolor/128x128/apps",
-            "/usr/share/pixmaps",
-            os.path.expanduser("~/.local/share/icons/hicolor/scalable/apps"),
-            os.path.expanduser("~/.local/share/icons/hicolor/512x512/apps"),
-            os.path.expanduser("~/.local/share/icons/hicolor/256x256/apps"),
-            os.path.expanduser("~/.local/share/icons/hicolor/128x128/apps"),
-            "/usr/share/icons",
-            os.path.expanduser("~/.local/share/icons")
-        ]
-        
-        extensions = ['.png', '.svg', '.xpm', '']
-        
-        # 1. Cerca per nome esatto
-        for icon_dir in icon_dirs:
-            if not os.path.exists(icon_dir):
-                continue
-            
-            for ext in extensions:
-                icon_file = f"{icon_name}{ext}"
-                full_path = os.path.join(icon_dir, icon_file)
-                if os.path.exists(full_path):
-                    return full_path
-
-        # 2. Cerca ricorsivamente (più lento, come fallback)
-        for icon_dir in [d for d in icon_dirs if 'hicolor' not in d and 'pixmaps' not in d]:
-             if not os.path.exists(icon_dir):
-                continue
-             for root, dirs, files in os.walk(icon_dir):
-                for ext in extensions:
-                    icon_file = f"{icon_name}{ext}"
-                    if icon_file in files:
-                        full_path = os.path.join(root, icon_file)
-                        # Preferisci risoluzioni più alte
-                        if any(size in full_path for size in ['256', '512', 'scalable']):
-                            return full_path
-        
-        return None # Non trovato
-
-
-class ProgramScanDialog(QDialog):
-    def __init__(self, image_manager=None, parent=None):
-        super().__init__(parent)
-        self.image_manager = image_manager
-        self.cache_file = Path("scanner_cache.json")
-        self.setWindowTitle("Scanning installed Programs")
-        self.setModal(True)
-        self.setFixedSize(700, 650)
-        self.setStyleSheet("""
-            QDialog { background-color: #1a1a1a; }
-            QLabel { color: white; font-size: 16px; }
-            QLineEdit { background-color: #2a2a2a; color: white; border: 2px solid #444; padding: 8px; border-radius: 8px; font-size: 14px; }
-            QListWidget { background-color: #2a2a2a; color: white; border: 2px solid #444; border-radius: 8px; font-size: 14px; padding: 5px; }
-            QListWidget::item { padding: 8px; border-radius: 4px; }
-            QListWidget::item:selected { background-color: #3a3a3a; }
-            QListWidget::item:hover { background-color: #333; }
-            QPushButton { background-color: #2a2a2a; color: white; border: 2px solid #444; padding: 12px 30px; border-radius: 8px; font-size: 14px; font-weight: bold; }
-            QPushButton:hover { background-color: #3a3a3a;} 
-        """)
-
-        layout = QVBoxLayout()
-        layout.setSpacing(15)
-        layout.setContentsMargins(30, 30, 30, 30)
-
-        header_layout = QHBoxLayout()
-        self.title_label = QLabel("Scanning installed programs in progress...")
-        self.title_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        header_layout.addWidget(self.title_label)
-        
-        header_layout.addStretch()
-        
-        self.refresh_btn = QPushButton("🔄")
-        self.refresh_btn.setFixedSize(40, 40)
-        self.refresh_btn.setToolTip("Update programs list")
-        self.refresh_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.refresh_btn.clicked.connect(self.force_rescan)
-        self.refresh_btn.setEnabled(False)
-        header_layout.addWidget(self.refresh_btn)
-        
-        layout.addLayout(header_layout)
-        
-        self.progress_label = QLabel("")
-        self.progress_label.setStyleSheet("color: #888; font-size: 12px;")
-        self.progress_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.progress_label)
-
-        search_box = QHBoxLayout()
-        search_box.addWidget(QLabel("🔍"))
-        self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Filter by name...")
-        self.search_input.textChanged.connect(self.filter_list)
-        search_box.addWidget(self.search_input)
-        layout.addLayout(search_box)
-
-        self.list_widget = QListWidget()
-        self.list_widget.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        layout.addWidget(self.list_widget)
-
-        self.info_label = QLabel("Select programs to add (Ctrl/Shift for multiple)")
-        self.info_label.setStyleSheet("color: #aaa; font-size: 13px;")
-        self.info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.info_label)
-
-        btn_layout = QHBoxLayout()
-        self.add_btn = QPushButton("Add selected")
-        self.add_btn.setEnabled(False)
-        self.add_btn.clicked.connect(self.accept)
-        self.cancel_btn = QPushButton("Cancel")
-        self.cancel_btn.clicked.connect(self.reject)
-        btn_layout.addWidget(self.add_btn)
-        btn_layout.addWidget(self.cancel_btn)
-        layout.addLayout(btn_layout)
-
-        self.setLayout(layout)
-
-        self.list_widget.itemSelectionChanged.connect(self.update_add_button)
-
-        self.scanner = None
-        if self.load_from_cache():
-            self.title_label.setText(f"Loaded {self.list_widget.count()} programs from cache")
-            self.progress_label.setText("✅ Cache loaded (press 🔄 to update)")
-            self.refresh_btn.setEnabled(True)
-        else:
-            self.start_scan()
-
-    def load_from_cache(self):
-        if not self.cache_file.exists():
-            return False
-        
-        try:
-            with open(self.cache_file, 'r', encoding='utf-8') as f:
-                cached_programs = json.load(f)
-            
-            if not cached_programs:
-                return False
-            
-            for data in cached_programs:
-                item = QListWidgetItem(f"📦 {data['name']}")
-                item.setData(Qt.ItemDataRole.UserRole, data)
-                self.list_widget.addItem(item)
-
-            self.list_widget.sortItems(Qt.SortOrder.AscendingOrder)
-
-            print(f"✅ Loaded {len(cached_programs)} programs from cache")
-            return True
-            
-        except Exception as e:
-            print(f"⚠️ Errore loading cache: {e}")
-            return False
-    
-    def save_to_cache(self, programs):
-        try:
-            with open(self.cache_file, 'w', encoding='utf-8') as f:
-                json.dump(programs, f, indent=2, ensure_ascii=False)
-            print(f"💾 Cache saved with {len(programs)} programs")
-        except Exception as e:
-            print(f"⚠️ Errore saving cache: {e}")
-    
-    def force_rescan(self):
-        self.list_widget.clear()
-        self.refresh_btn.setEnabled(False)
-        self.title_label.setText("Scanning installed programs in progress...")
-        self.progress_label.setText("")
-        self.start_scan()
-    
-    def start_scan(self):
-        self.scanner = ProgramScanner()
-        self.scanner.program_found.connect(self.add_item)
-        self.scanner.scan_complete.connect(self.scan_done)
-        self.scanner.progress_update.connect(self.update_progress)
-        self.scanner.start()
-
-    def add_item(self, data):
-        item = QListWidgetItem(f"📦 {data['name']}")
-        item.setData(Qt.ItemDataRole.UserRole, data)
-        self.list_widget.addItem(item)
-        self.title_label.setText(f"Found {self.list_widget.count()} programs")
-
-    def scan_done(self):
-        programs = []
-        for i in range(self.list_widget.count()):
-            item = self.list_widget.item(i)
-            programs.append(item.data(Qt.ItemDataRole.UserRole))
-
-        self.list_widget.sortItems(Qt.SortOrder.AscendingOrder)
-        self.save_to_cache(programs)
-        
-        self.title_label.setText(f"Scannning complete — Found {self.list_widget.count()} programs")
-        self.progress_label.setText("💾 Cache saved")
-        self.refresh_btn.setEnabled(True)
-    
-    def update_progress(self, message):
-        self.progress_label.setText(message)
-
-    def filter_list(self, text):
-        for i in range(self.list_widget.count()):
-            item = self.list_widget.item(i)
-            item.setHidden(text.lower() not in item.text().lower())
-
-    def update_add_button(self):
-        selected = len(self.list_widget.selectedItems())
-        self.add_btn.setEnabled(selected > 0)
-        self.info_label.setText(f"{selected} selected" if selected > 0 else "Select programs to add")
-
-    def get_selected(self):
-        return [item.data(Qt.ItemDataRole.UserRole) for item in self.list_widget.selectedItems()]
 
 
 # ==================================
@@ -709,6 +391,52 @@ class DownloadWorker(QThread):
     def stop(self):
         """Ferma il worker in modo sicuro"""
         print("Worker interruption requested")
+        self.is_running = False
+
+class CoverDownloadWorker(QThread):
+    """Worker thread per scaricare copertine per app esistenti"""
+    progress_update = pyqtSignal(str, int)  # Messaggio, percentuale
+    cover_downloaded = pyqtSignal(int, str)  # app_index, new_icon_path
+    finished = pyqtSignal(int)  # numero di copertine scaricate
+
+    def __init__(self, apps_to_update, image_manager):
+        super().__init__()
+        self.apps_to_update = apps_to_update  # Lista di tuple (index, app_data)
+        self.image_manager = image_manager
+        self.is_running = True
+
+    def run(self):
+        total = len(self.apps_to_update)
+        updated_count = 0
+        
+        if total == 0:
+            self.finished.emit(0)
+            return
+
+        for i, (app_index, app_data) in enumerate(self.apps_to_update):
+            if not self.is_running:
+                break
+            
+            percent = int((i + 1) / total * 100)
+            self.progress_update.emit(f"Downloading: {app_data['name']}...", percent)
+            
+            # Scarica immagine 16:9
+            image_result = self.image_manager.get_app_image(app_data['name'], app_data['path'])
+            if image_result and image_result != app_data['path']:
+                # Emetti solo se abbiamo trovato una copertina diversa dall'exe
+                self.cover_downloaded.emit(app_index, image_result)
+                updated_count += 1
+        
+        if self.is_running:
+            self.progress_update.emit("Complete!", 100)
+        else:
+            self.progress_update.emit("Cancelled.", 100)
+            
+        self.finished.emit(updated_count)
+
+    def stop(self):
+        """Ferma il worker in modo sicuro"""
+        print("🛑 Cover download worker interruption requested")
         self.is_running = False
 
 
@@ -1384,6 +1112,7 @@ class TVLauncher(QMainWindow):
         self.download_worker = None
         self.progress_dialog = None
         self.added_count = 0
+        self.cover_download_worker = None
         # === FINE OTTIMIZZAZIONE #2 ===
         
         # === SCALING SYSTEM ===
@@ -1788,6 +1517,16 @@ class TVLauncher(QMainWindow):
         bg_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         bg_btn.setFixedSize(self.scaling.scale(48), self.scaling.scale(48))
 
+
+        covers_btn = QPushButton()
+        covers_btn.setIcon(QIcon("assets/icons/download.png"))  # Crea un'icona download.png
+        covers_btn.setIconSize(QSize(self.scaling.scale(23), self.scaling.scale(23)))
+        covers_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        covers_btn.setFixedSize(self.scaling.scale(48), self.scaling.scale(48))
+        covers_btn.setToolTip("Download Covers for Existing Apps")
+        covers_btn.clicked.connect(self.download_covers_for_existing_apps)
+        header_layout.addWidget(covers_btn)
+
         bg_btn.setToolTip("Set a Background Here")
         bg_btn.clicked.connect(self.set_background)
         
@@ -1811,6 +1550,7 @@ class TVLauncher(QMainWindow):
         api_btn.setStyleSheet(btn_style)
         scan_btn.setStyleSheet(btn_style)
         add_btn.setStyleSheet(btn_style)
+        covers_btn.setStyleSheet(btn_style)
         bg_btn.setStyleSheet(btn_style)
         
         main_layout.addLayout(header_layout)
@@ -1947,6 +1687,11 @@ class TVLauncher(QMainWindow):
         return {'apps': [], 'background': '', 'steamgriddb_api_key': ''}
    
     def save_config(self):
+        # Assicura che ogni app abbia icon_name per il search widget
+        for app in self.apps:
+            if 'icon_name' not in app and 'icon' in app:
+                app['icon_name'] = app['icon']
+        
         with open(self.config_file, 'w') as f:
             json.dump({
                 'apps': self.apps,
@@ -1955,30 +1700,216 @@ class TVLauncher(QMainWindow):
             }, f, indent=2)
    
     def set_api_key(self):
+        """Apre il dialog per impostare la API key"""
         dialog = ApiKeyDialog(self.steamgriddb_api_key, self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             new_key = dialog.get_api_key()
             if new_key != self.steamgriddb_api_key:
+                old_key = self.steamgriddb_api_key
                 self.steamgriddb_api_key = new_key
                 self.image_manager = ImageManager(api_key=self.steamgriddb_api_key)
                 self.save_config()
                 
                 if new_key:
-                    QMessageBox.information(
-                        self,
-                        "API Key Saved",
-                        "✅ API Key saved successfully!\n\n"
-                        "Now you can download 16:9 images\n"
-                        "when you add new apps to the launcher."
-                    )
+                    # Se è stata aggiunta una nuova API key e ci sono app
+                    if not old_key and self.apps:
+                        # Avvia direttamente il download (la conferma è dentro il metodo)
+                        self.download_covers_for_existing_apps()
+                    else:
+                        QMessageBox.information(
+                            self,
+                            "API Key Saved",
+                            "✅ API Key successfully saved!\n\n"
+                            "Now you can download the 16:9 images\n"
+                            "when you add a new app into the launcher."
+                        )
                 else:
                     QMessageBox.information(
                         self,
                         "API Key Removed",
-                        "API Key removed. The launcher will use only\n"
-                        "Local images or exe icons."
+                        "API Key removed. The Launcher will use only\n"
+                        "local images and exe icons."
                     )
         
+        self.setFocus()
+        self.activateWindow()
+
+    def download_covers_for_existing_apps(self):
+        """Scarica le copertine per tutte le app esistenti che non ne hanno una"""
+        
+        # Controlla se c'è l'API key
+        if not self.steamgriddb_api_key:
+            reply = QMessageBox.question(
+                self,
+                "API Key Required",
+                "You need a SteamGridDB API Key to download covers.\n\n"
+                "Do you want to set it now?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.Yes
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                self.set_api_key()
+            return
+        
+        # Controlla se requests è disponibile
+        if not REQUESTS_AVAILABLE:
+            QMessageBox.warning(
+                self,
+                "Missing Library",
+                "The 'requests' library is not installed.\n\n"
+                "Install it with: pip install requests"
+            )
+            return
+        
+        # Controlla se ci sono app
+        if not self.apps:
+            QMessageBox.information(
+                self,
+                "No Apps",
+                "Add some apps first before downloading covers!"
+            )
+            return
+        
+        # Trova le app che necessitano di una copertina
+        apps_to_update = []
+        for i, app in enumerate(self.apps):
+            icon_path = app.get('icon', '')
+            app_path = app.get('path', '')
+            
+            # Casi in cui scaricare una nuova copertina:
+            # 1. Icon è None o stringa vuota
+            # 2. Icon è uguale al path dell'exe
+            # 3. Icon è un file .exe
+            # 4. Icon non esiste più sul filesystem
+            needs_update = False
+            
+            if not icon_path:  # None o stringa vuota
+                needs_update = True
+            elif icon_path == app_path:  # Usa l'exe come icona
+                needs_update = True
+            elif icon_path.lower().endswith('.exe'):  # È un file exe
+                needs_update = True
+            elif not Path(icon_path).exists():  # Il file non esiste
+                needs_update = True
+            
+            if needs_update:
+                apps_to_update.append((i, app))
+        
+        if not apps_to_update:
+            QMessageBox.information(
+                self,
+                "No Updates Needed",
+                "All apps already have custom covers! ✅"
+            )
+            return
+        
+        # Mostra quante app verranno aggiornate
+        reply = QMessageBox.question(
+            self,
+            "Download Covers",
+            f"Found {len(apps_to_update)} app(s) without custom covers.\n\n"
+            f"Do you want to download covers for them?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes
+        )
+        
+        if reply != QMessageBox.StandardButton.Yes:
+            self.setFocus()
+            self.activateWindow()
+            return
+        
+        # Crea progress dialog
+        self.progress_dialog = QProgressDialog(
+            f"Downloading covers for {len(apps_to_update)} apps...", 
+            "Cancel", 
+            0, 
+            100, 
+            self
+        )
+        self.progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
+        self.progress_dialog.setWindowTitle("Downloading Covers")
+        self.progress_dialog.setFixedSize(self.scaling.scale(450), self.scaling.scale(150))
+        self.progress_dialog.setValue(0)
+        
+        # Stile per il QProgressDialog
+        self.progress_dialog.setStyleSheet("""
+            QProgressDialog {
+                background-color: #1a1a1a;
+                color: white;
+            }
+            QProgressDialog QLabel {
+                color: white;
+                font-size: 14px;
+            }
+            QProgressBar {
+                background-color: #2a2a2a;
+                color: white;
+                border: 1px solid #444;
+                border-radius: 5px;
+                text-align: center;
+            }
+            QProgressBar::chunk {
+                background-color: #3a3a3a;
+                border-radius: 5px;
+            }
+            QPushButton {
+                background-color: #2a2a2a; 
+                color: white; 
+                border: 2px solid #444; 
+                padding: 8px 20px; 
+                border-radius: 8px; 
+                font-size: 14px; 
+            }
+            QPushButton:hover { background-color: #3a3a3a; }
+        """)
+        
+        # Crea e avvia il worker
+        self.cover_download_worker = CoverDownloadWorker(apps_to_update, self.image_manager)
+        self.cover_download_worker.progress_update.connect(self._on_cover_download_progress)
+        self.cover_download_worker.cover_downloaded.connect(self._on_cover_downloaded)
+        self.cover_download_worker.finished.connect(self._on_cover_download_finished)
+        
+        # Connetti il pulsante "Annulla"
+        self.progress_dialog.canceled.connect(self.cover_download_worker.stop)
+        
+        self.cover_download_worker.start()
+        self.progress_dialog.show()
+
+    def _on_cover_download_progress(self, message, percent):
+        """Aggiorna il progress dialog per il download delle copertine"""
+        if self.progress_dialog:
+            self.progress_dialog.setLabelText(message)
+            self.progress_dialog.setValue(percent)
+
+    def _on_cover_downloaded(self, app_index, new_icon_path):
+        """Aggiorna l'app con la nuova copertina scaricata"""
+        if 0 <= app_index < len(self.apps):
+            self.apps[app_index]['icon'] = new_icon_path
+            print(f"✅ Cover updated for: {self.apps[app_index]['name']}")
+
+    def _on_cover_download_finished(self, updated_count):
+        """Chiamato al termine del download di tutte le copertine"""
+        if self.progress_dialog:
+            self.progress_dialog.close()
+            self.progress_dialog = None
+        
+        self.save_config()
+        self.build_infinite_carousel()
+        
+        if updated_count > 0:
+            QMessageBox.information(
+                self,
+                "Download Complete",
+                f"✅ Successfully downloaded {updated_count} cover(s)!"
+            )
+        else:
+            QMessageBox.information(
+                self,
+                "Download Complete",
+                "No new covers were downloaded."
+            )
+        
+        self.cover_download_worker = None
         self.setFocus()
         self.activateWindow()
    
@@ -2747,10 +2678,14 @@ class TVLauncher(QMainWindow):
 
    
     def closeEvent(self, event):
-        # Assicurati di fermare il worker se è in esecuzione
+        # Assicurati di fermare i worker se sono in esecuzione
         if self.download_worker and self.download_worker.isRunning():
             self.download_worker.stop()
-            self.download_worker.wait(1000) # Aspetta max 1 secondo
+            self.download_worker.wait(1000)
+        
+        if self.cover_download_worker and self.cover_download_worker.isRunning():
+            self.cover_download_worker.stop()
+            self.cover_download_worker.wait(1000)
             
         if self.process_check_timer:
             self.process_check_timer.stop()
