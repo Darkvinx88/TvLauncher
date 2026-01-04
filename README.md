@@ -2,14 +2,27 @@
 
 A sleek, console-style application launcher for Windows and Linux with gamepad support, automatic image fetching, and powerful organization features.
 
-![TV Launcher](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-blue)
-![Python](https://img.shields.io/badge/Python-3.8%2B-green)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+<p align="center">
+  <a href='https://ko-fi.com/W7W41RFDX2' target='_blank'>
+    <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="Platform">
+  <img src="https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License">
+</p>
+
+
+
+
 
 ## ✨ Features
 
 ### 🎨 Beautiful Interface
 - **Full-screen TV-Mode** - Console-style carousel with smooth animations
+- **System Menu** - Press `S` or `Start` button to access the system Menu
 - **Responsive Scaling** - Automatically adapts to any screen resolution (from 720p to 4K+)
 - **Gamepad Support** - Navigate with Xbox/PlayStation controllers or keyboard/Bluetooth TV Remotes
 - **Automatic Image Downloads** - Fetches 16:9 cover art from SteamGridDB
@@ -17,26 +30,29 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **Quick Search Widget** - Instant app filtering with F/LB
 - **Drag & Drop Reordering** - Reorganize apps with R/RB
 - **System Controls** - Built-in Restart/Shutdown/Sleep options
+- **Customizable Controls** - Remap any keyboard key or remote button to your liking
 
 ## 📸 Screenshots
 
-<img width="1920" height="1080" alt="Screenshot (275)" src="https://github.com/user-attachments/assets/27e8cb96-49e2-4f69-8543-e99e303cf4ab" />
+<img width="1920" height="1080" alt="Screenshot (287)" src="https://github.com/user-attachments/assets/7852122d-ed4b-46cb-bc77-3ef451de2848" />
 
 *Carousel view with cover art*
 
-<img width="1920" height="1080" alt="Screenshot (276)" src="https://github.com/user-attachments/assets/eee826a9-94c1-493d-bdfb-77539611abc7" />
+<img width="1920" height="1080" alt="Screenshot (288)" src="https://github.com/user-attachments/assets/4424c77c-7b4b-44f7-8252-d4e3a2673ae1" />
+
+*System Menu*
+
+<img width="1920" height="1080" alt="Screenshot (290)" src="https://github.com/user-attachments/assets/e04e488c-6404-4b1f-8488-6c8b80d5848b" />
 
 *Quick Search feature*
 
-<img width="1920" height="1080" alt="Screenshot (278)" src="https://github.com/user-attachments/assets/7bbe9023-4762-4f12-b59a-3f4981dad55a" />
 
-*Reorder mode with visual indicators*
+<img width="1920" height="1080" alt="Screenshot (289)" src="https://github.com/user-attachments/assets/1601e609-53c6-4e23-b381-f1d6df89017e" />
 
-<img width="1920" height="1080" alt="Screenshot (277)" src="https://github.com/user-attachments/assets/8a5f00e4-2983-433a-9d53-436bbb440d4c" />
+*Key Remapper*
 
-*Automatic program detection*
 
-https://github.com/user-attachments/assets/0c996b4e-c46a-43c4-9418-9f07856c3bf4
+https://github.com/user-attachments/assets/2388702e-ab89-4c6f-b263-d25102cec5fb
 
 *In motion*
 
@@ -44,6 +60,7 @@ https://github.com/user-attachments/assets/0c996b4e-c46a-43c4-9418-9f07856c3bf4
 - **Gamepad Compatible** - Xbox, PlayStation, or any standard controller
 - **Keyboard Navigation** - Full keyboard support
 - **TV Remote Support** - Works with Bluetooth TV remotes
+- **Fully Customizable** - Remap any key or button in Settings → Key Remapper
 - **Auto-detection** - Automatically detects connected gamepads with visual notifications
 
 ### 🔍 Smart Organization
@@ -71,19 +88,30 @@ https://github.com/user-attachments/assets/0c996b4e-c46a-43c4-9418-9f07856c3bf4
 - **Optimized Loading** - Cached pixmaps for smooth performance
 
 ### ⚡ System Controls
+- **Settings Menu** Comprehensive configuration panel with:
+   - Visual toggles for all settings
+   - Backup/Restore configuration
+   - Soft Reset (keeps apps) vs Full Reset options
+   - Direct GitHub update checker
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
-- **Process Monitoring** - Auto-detects when launched apps close
 - **Input Management** - Automatically disables controls when app is running
 
-## 🆕 Recent Updates
+### 🆕 Recent Updates Version 0.5 
 
-### Latest Version
-- ✅ **Controller Connection Banners** - Visual notifications when gamepads connect/disconnect (Windows)
-- ✅ **Manual Cover Download** - New button to download covers for existing apps
-- ✅ **Improved Auto-download Logic** - Smarter image fetching when adding programs
-- ✅ **Program Scanner Enhancements** - Cached results and proper icon extraction
-- ✅ **Performance Improvements** - Initial refactoring for faster loading
-- ✅ **Portable Mode** - Fully portable Windows version (no python install needed)
+- **✅ 🎮 Key Remapper** - Complete control customization system
+   - Remap any keyboard key or TV remote button
+   - Organized by categories (Navigation, Actions, Features)
+   - Reset to defaults option
+   - Changes apply instantly
+- **✅ ⚙️ Settings Menu** - Complete UI overhaul
+   - Keep fullscreen or minimize launcher when launching apps
+   - Header buttons moved into the settings Menu
+   - System Sounds now available
+   - Full backup/restore functionality
+   - Key mappings included in backups
+   - Two reset options: Soft (keeps apps) and Full (factory reset)
+   - System Clock on/off  
+   - Information panel with update checker
 
 ## 🔧 Requirements
 
@@ -120,7 +148,7 @@ sudo apt-get update
 sudo apt-get install python3-pyqt6 python3-pip
 
 # Fedora:
-sudo dnf install python3-qt6 python3-pip
+sudo dnf install python3-pyqt6 python3-pip
 
 # Arch:
 sudo pacman -S python-pyqt6 python-pip
@@ -147,20 +175,21 @@ chmod +x TvLauncher_Linux.py
 
 ## 🎮 Controls
 
-### Keyboard Controls
+### Default Keyboard Controls
 | Key | Action |
 |-----|--------|
 | `←` `→` | Navigate carousel |
 | `↑` `↓` | Navigate menus / system controls |
 | `Enter` | Launch app |
-| **`F`** | **Open Quick Search** |
-| **`R`** | **Toggle Reorder Mode** |
+| `F` | Open Quick Search |
+| `R` | Toggle Reorder Mode |
+| `S` | Open Settings Menu |
 | `E` | Edit current app |
 | `Delete` | Remove current app |
 | `Tab` | Switch search mode (when searching) |
 | `Esc` | Exit launcher / Cancel / Close search |
 
-### Gamepad Controls
+### Default Gamepad Controls
 | Button | Action |
 |--------|--------|
 | D-Pad / Left Stick | Navigate |
@@ -168,8 +197,22 @@ chmod +x TvLauncher_Linux.py
 | `B` | Back / Cancel |
 | `X` | Edit app / Switch mode (in search) |
 | `Y` | Delete app |
-| **`LB`** | **Open Quick Search** |
-| **`RB`** | **Toggle Reorder Mode** |
+| `LB` | Open Quick Search |
+| `RB` | Toggle Reorder Mode |
+| `Start` | Open Settings Menu |
+
+
+**🎮 Customizing Controls**
+All controls can be remapped! Here's how:
+ - Open Settings - Press S or Start button
+ - Navigate to Advanced section
+ - Select "🎮 Key Remapper"
+ - Choose an action to remap
+ - Press "Change" button
+ - Press any key or button on your remote/keyboard
+ - Confirm or cancel
+ - Save and Close when done
+ - Works with any keyboard key or TV remote button
 
 ## 🚀 Quick Start Guide
 
@@ -205,6 +248,42 @@ chmod +x TvLauncher_Linux.py
    - Click the `🖼️` icon
    - Select an image file (16:9 recommended)
    - Background updates immediately
+  
+6. **🆕 Customize Controls (Optional)**
+   - Press `S` to open Settings
+   - Navigate to "🎮 Key Remapper"
+   - Remap any key to your preference
+   - Changes apply instantly
+     
+### Using Settings Menu
+
+Press `S` or `Start` button to access:
+
+**🎮 Quick Actions:**
+- API Key management
+- Program scanner
+- Add/Edit apps
+- Download covers
+- Set background
+
+**🎨 Appearance:**
+- Toggle clock visibility
+- (More options coming soon)
+
+**⚡ Behavior:**
+- Sound effects toggle
+- Fullscreen mode toggle
+
+**🔧 Advanced:**
+- 🎮 Key Remapper - Customize all controls
+- 💾 Backup Config - Export your setup
+- 📥 Restore Config - Import saved setup
+- 🔄 Reset Settings - Soft or Full reset
+
+**ℹ️ Information:**
+- Version number
+- App count
+- GitHub update checker
 
 ### Using Quick Search
 
@@ -314,6 +393,25 @@ Configuration is stored in `launcher_apps.json`:
 }
 ```
 
+**🆕 Key mappings** are stored separately in `key_mappings.json`:
+
+```json
+{
+  "current_profile": "keyboard",
+  "mappings": {
+    "keyboard": {
+      "navigate_left": "key_16777234",
+      "navigate_right": "key_16777236",
+      "launch": "key_16777220",
+      "quick_search": "key_70",
+      "reorder_mode": "key_82"
+    }
+  }
+}
+```
+
+💡 **Tip:** Use the Backup feature in Settings to save your entire configuration (apps + mappings + settings).
+
 ### Image Organization
 Images are stored in `assets/APP_NAME/banner.{png|jpg|jpeg|webp}` with automatic fallback.
 
@@ -355,6 +453,18 @@ The Windows version is fully portable - simply press the .exe to start the launc
 - Try pressing `R` or `RB` to toggle
 - Cannot activate during menu, dialogs, or when no apps exist
 
+### Key Remapper Issues
+- If remapped keys don't work, try restarting the launcher
+- Check `key_mappings.json` file exists
+- Use "Reset to Defaults" in Key Remapper if needed
+- Key mappings are automatically included in configuration backups
+
+### Settings Menu Issues
+- Press `S` or `Start` to open settings
+- If menu won't close, press `Esc` or `B`
+- Settings changes save automatically
+- Use Soft Reset to restore settings while keeping apps
+
 ### Program Scanner Issues
 - First scan may take 1-2 minutes
 - Results are cached in `scanner_cache_*.json`
@@ -378,6 +488,19 @@ sudo apt-get install qt6-qpa-plugins
 sudo dnf install qt6-qtbase-gui
 ```
 
+**Missing Qt Multimedia (Sound Effects Not Working):**
+If the launcher won't start or sound effects don't work, you may need Qt Multimedia packages:
+```bash
+# Debian / Ubuntu / Mint:
+sudo apt install python3-pyqt6.qtmultimedia
+
+# Fedora:
+sudo dnf install python3-qt6-qtmultimedia
+
+# Arch:
+sudo pacman -S python-pyqt6-multimedia
+```
+
 **Permission Denied:**
 ```bash
 chmod +x TvLauncher_Linux.py
@@ -399,7 +522,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Windows:** Some executables may need administrator privileges
 - **All:** Background images should be high resolution (1920x1080+) for best results
 - **Linux/Wayland:** Some scaling issues may occur, X11 recommended
-- **Reorder Mode:** Cannot be activated while dialogs or menus are open (by design)
+- **Key Remapper:** Changes require launcher restart on some systems
 
 ## 📧 Contact
 
