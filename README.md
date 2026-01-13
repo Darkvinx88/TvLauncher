@@ -34,25 +34,33 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 
 ## 📸 Screenshots
 
-<img width="1920" height="1080" alt="Screenshot (287)" src="https://github.com/user-attachments/assets/7852122d-ed4b-46cb-bc77-3ef451de2848" />
+<img width="1920" height="1080" alt="Screenshot (305)" src="https://github.com/user-attachments/assets/912fc172-427e-41c0-a043-c728a255b7ce" />
+
 
 *Carousel view with cover art*
 
-<img width="1920" height="1080" alt="Screenshot (288)" src="https://github.com/user-attachments/assets/4424c77c-7b4b-44f7-8252-d4e3a2673ae1" />
+<img width="1920" height="1080" alt="Screenshot (301)" src="https://github.com/user-attachments/assets/f7bbd689-0bbd-4963-b040-36d5eb6665c1" />
+
 
 *System Menu*
 
-<img width="1920" height="1080" alt="Screenshot (290)" src="https://github.com/user-attachments/assets/e04e488c-6404-4b1f-8488-6c8b80d5848b" />
+<img width="1920" height="1080" alt="Screenshot (303)" src="https://github.com/user-attachments/assets/cba6c06e-c600-4c5f-b55f-c30a672c7319" />
+
 
 *Quick Search feature*
 
 
-<img width="1920" height="1080" alt="Screenshot (289)" src="https://github.com/user-attachments/assets/1601e609-53c6-4e23-b381-f1d6df89017e" />
+<img width="1920" height="1080" alt="Screenshot (302)" src="https://github.com/user-attachments/assets/5d65517b-b4c4-40dc-a1c6-c09247486ec5" />
+
 
 *Key Remapper*
 
 
-https://github.com/user-attachments/assets/2388702e-ab89-4c6f-b263-d25102cec5fb
+
+https://github.com/user-attachments/assets/9b5a56f2-09a0-4c7f-829d-2a1907c9bc80
+
+
+
 
 *In motion*
 
@@ -67,7 +75,6 @@ https://github.com/user-attachments/assets/2388702e-ab89-4c6f-b263-d25102cec5fb
 - **Quick Search** - Press `F` or `LB` to instantly search your apps
   - Live filtering as you type
   - Alphabetically sorted results
-  - Two modes: Typing & Navigation
   - Keyboard and gamepad support
 - **Drag & Drop Reordering** - Press `R` or `RB` to rearrange apps
   - Press `Enter`/`A` to activate reorder mode
@@ -84,8 +91,7 @@ https://github.com/user-attachments/assets/2388702e-ab89-4c6f-b263-d25102cec5fb
 - **Manual Download Button** - Download covers for existing apps at any time
 - **Smart Auto-download Logic** - Automatically fetches images when adding apps
 - **Local Image Support** - Use your own custom images
-- **Smart Fallback** - Uses exe icons if images unavailable
-- **Optimized Loading** - Cached pixmaps for smooth performance
+
 
 ### ⚡ System Controls
 - **Settings Menu** Comprehensive configuration panel with:
@@ -94,26 +100,26 @@ https://github.com/user-attachments/assets/2388702e-ab89-4c6f-b263-d25102cec5fb
    - Soft Reset (keeps apps) vs Full Reset options
    - Direct GitHub update checker
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
-- **Input Management** - Automatically disables controls when app is running
 
-### 🆕 Recent Updates Version 0.5 
 
-- **✅ 🎮 Key Remapper** - Complete control customization system
-   - Remap any keyboard key or TV remote button
-   - Organized by categories (Navigation, Actions, Features)
-   - Reset to defaults option
-   - Changes apply instantly
-- **✅ ⚙️ Settings Menu** - Complete UI overhaul
-   - Keep fullscreen or minimize launcher when launching apps
-   - Header buttons moved into the settings Menu
-   - System Sounds now available
-   - Full backup/restore functionality
-   - Key mappings included in backups
-   - Two reset options: Soft (keeps apps) and Full (factory reset)
-   - System Clock on/off  
-   - Information panel with update checker
+### 🆕 New in Version 0.6 
 
-## 🔧 Requirements
+- **Fixed**
+   - Fixed a critical bug in the cover downloader
+   - Strenghtened the cover download functionality
+  
+  
+  
+- **Added**
+   - The ability to increase and decrease volume with xbox/ps4 controllers by pressing `LT + Dpad` up/down
+   - Tile glow effect for the focused app and on/off switch in the settings menu
+   - Network settings to easely manage ethernet/wifi/bluetooth
+   - General UX/UI optimizations
+   - Matching icons for every part of the settings menu
+   - Reworked keymapper interface to match the new icons
+   
+   
+   ## 🔧 Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
 - **Python:** 3.8 or higher
@@ -199,7 +205,9 @@ chmod +x TvLauncher_Linux.py
 | `Y` | Delete app |
 | `LB` | Open Quick Search |
 | `RB` | Toggle Reorder Mode |
-| `Start` | Open Settings Menu |
+| `LT+Dpad up/down` | Volume up/down |
+
+
 
 
 **🎮 Customizing Controls**
@@ -255,36 +263,6 @@ All controls can be remapped! Here's how:
    - Remap any key to your preference
    - Changes apply instantly
      
-### Using Settings Menu
-
-Press `S` or `Start` button to access:
-
-**🎮 Quick Actions:**
-- API Key management
-- Program scanner
-- Add/Edit apps
-- Download covers
-- Set background
-
-**🎨 Appearance:**
-- Toggle clock visibility
-- (More options coming soon)
-
-**⚡ Behavior:**
-- Sound effects toggle
-- Fullscreen mode toggle
-
-**🔧 Advanced:**
-- 🎮 Key Remapper - Customize all controls
-- 💾 Backup Config - Export your setup
-- 📥 Restore Config - Import saved setup
-- 🔄 Reset Settings - Soft or Full reset
-
-**ℹ️ Information:**
-- Version number
-- App count
-- GitHub update checker
-
 ### Using Quick Search
 
 1. Press `F` (keyboard) or `LB` (gamepad) anywhere
