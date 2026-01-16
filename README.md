@@ -393,8 +393,35 @@ Configuration is stored in `launcher_apps.json`:
 ### Image Organization
 Images are stored in `assets/APP_NAME/banner.{png|jpg|jpeg|webp}` with automatic fallback.
 
-### Portable Mode
+### Windows Portable Mode
 The Windows version is fully portable - simply press the .exe to start the launcher. You can move the entire folder anywhere.
+
+## Linux Portable Mode
+This version includes everything needed:
+- Python 3.10 runtime
+- All Python packages (PyQt6, pygame, requests, etc.)
+- Qt6 with XCB/Wayland support (if in trouble sudo apt install libxcb)
+- All system libraries bundled
+  
+**No installation required!** Just extract and run:
+```bash
+# Extract
+TVLauncher Linux v0.6 Portable.zip
+
+# Run
+./launcher.sh
+
+or edit the .desktop file
+```
+
+### System Requirements
+- **Any Linux distro** (Ubuntu, Fedora, Arch, Debian, etc.)
+- **X11 or Wayland** (auto-detected)
+- **No external dependencies**
+
+### Size
+- Compressed: ~150MB
+- Extracted: ~350MB
 
 ## 🛠️ Troubleshooting
 
