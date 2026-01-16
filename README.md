@@ -111,6 +111,7 @@ https://github.com/user-attachments/assets/9b5a56f2-09a0-4c7f-829d-2a1907c9bc80
   
   
 - **Added**
+   - Linux Portable version
    - The ability to increase and decrease volume with xbox/ps4 controllers by pressing `LT + Dpad` up/down
    - Tile glow effect for the focused app and on/off switch in the settings menu
    - Network settings to easely manage ethernet/wifi/bluetooth
