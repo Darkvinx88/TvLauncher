@@ -393,7 +393,7 @@ Configuration is stored in `launcher_apps.json`:
 ### Image Organization
 Images are stored in `assets/APP_NAME/banner.{png|jpg|jpeg|webp}` with automatic fallback.
 
-### Windows Portable Mode
+## Windows Portable Mode
 The Windows version is fully portable - simply press the .exe to start the launcher. You can move the entire folder anywhere.
 
 ## Linux Portable Mode
