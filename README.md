@@ -34,30 +34,35 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 
 ## 📸 Screenshots
 
-<img width="1920" height="1080" alt="Screenshot (305)" src="https://github.com/user-attachments/assets/912fc172-427e-41c0-a043-c728a255b7ce" />
+
+<img width="1920" height="1080" alt="Screenshot (317)" src="https://github.com/user-attachments/assets/6447fb8d-4c88-4a9d-80ce-4982675774d6" />
 
 
 *Carousel view with cover art*
 
-<img width="1920" height="1080" alt="Screenshot (301)" src="https://github.com/user-attachments/assets/f7bbd689-0bbd-4963-b040-36d5eb6665c1" />
+
+<img width="1920" height="1080" alt="Screenshot (313)" src="https://github.com/user-attachments/assets/85657856-b507-4b95-897e-261f4e26b290" />
 
 
 *System Menu*
 
-<img width="1920" height="1080" alt="Screenshot (303)" src="https://github.com/user-attachments/assets/cba6c06e-c600-4c5f-b55f-c30a672c7319" />
-
-
-*Quick Search feature*
 
 
 <img width="1920" height="1080" alt="Screenshot (302)" src="https://github.com/user-attachments/assets/5d65517b-b4c4-40dc-a1c6-c09247486ec5" />
 
 
-*Key Remapper*
+*Key Mapper*
+
+
+<img width="1920" height="1080" alt="Screenshot (314)" src="https://github.com/user-attachments/assets/616d08f4-c1c3-45a7-8e8e-6981a002348c" />
+
+*Category Manager*
 
 
 
-https://github.com/user-attachments/assets/9b5a56f2-09a0-4c7f-829d-2a1907c9bc80
+https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
+
+
 
 
 
@@ -72,6 +77,17 @@ https://github.com/user-attachments/assets/9b5a56f2-09a0-4c7f-829d-2a1907c9bc80
 - **Auto-detection** - Automatically detects connected gamepads with visual notifications
 
 ### 🔍 Smart Organization
+- **Category System** 
+  - Organize apps into categories (Games, Media, Programs, Other)
+  - Press Up/D-Pad Up to open category selector
+  - Navigate categories with Left/Right or D-Pad
+  - Quick category assignment with C (keyboard) or X/Square (controller)
+
+
+- **Category Manager** - Customize categories in Settings
+   - Add, edit, or delete categories
+   - Choose custom icons and colors
+   - Set default category for new apps
 - **Quick Search** - Press `F` or `LB` to instantly search your apps
   - Live filtering as you type
   - Alphabetically sorted results
@@ -99,25 +115,31 @@ https://github.com/user-attachments/assets/9b5a56f2-09a0-4c7f-829d-2a1907c9bc80
    - Backup/Restore configuration
    - Soft Reset (keeps apps) vs Full Reset options
    - Direct GitHub update checker
+   - Category Manager for organizing apps
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
-### 🆕 New in Version 0.6 
+ ### New in Version 0.7
+- **Fixed:**
+   - ✅ Fixed PS4/PS5 controller mappings - controllers now mapped correctly
+   - ✅ Complete rewrite of controller support for both Windows and Linux
+   - ✅ Improved controller responsiveness and accuracy
 
-- **Fixed**
-   - Fixed a critical bug in the cover downloader
-   - Strenghtened the cover download functionality
-  
-  
-  
-- **Added**
-   - Linux Portable version
-   - The ability to increase and decrease volume with xbox/ps4 controllers by pressing `LT + Dpad` up/down
-   - Tile glow effect for the focused app and on/off switch in the settings menu
-   - Network settings to easely manage ethernet/wifi/bluetooth
-   - General UX/UI optimizations
-   - Matching icons for every part of the settings menu
-   - Reworked keymapper interface to match the new icons
+- **Added:**
+  -  **Category System** - Organize apps into categories and quickly access them
+    - Press Up/D-Pad Up to open category selector
+    - Navigate with Left/Right or D-Pad
+    - Quick category assignment with C/X button
+
+
+- **📂Category Editor** - Edit, rename, and delete categories in Settings
+   - Customize category icons and colors
+   - Set default category for uncategorized apps
+   - Visual category organization
+- **🖼️New Default Wallpaper** - Beautiful stock wallpaper on first launch
+- **🚪Exit Confirmation Dialog** - Prevents accidental launcher closure
+- **⚡Code Refactoring** - Improved performance and stability
+- **🔧Controller Optimization** - Better joystick polling and event handling
    
    
    ## 🔧 Requirements
@@ -192,6 +214,7 @@ chmod +x TvLauncher_Linux.py
 | `R` | Toggle Reorder Mode |
 | `S` | Open Settings Menu |
 | `E` | Edit current app |
+| `C` | Quick Category Assignment |
 | `Delete` | Remove current app |
 | `Tab` | Switch search mode (when searching) |
 | `Esc` | Exit launcher / Cancel / Close search |
@@ -199,13 +222,15 @@ chmod +x TvLauncher_Linux.py
 ### Default Gamepad Controls
 | Button | Action |
 |--------|--------|
-| D-Pad / Left Stick | Navigate |
-| `A` | Launch app / Confirm |
-| `B` | Back / Cancel |
-| `X` | Edit app / Switch mode (in search) |
-| `Y` | Delete app |
-| `LB` | Open Quick Search |
-| `RB` | Toggle Reorder Mode |
+| `D-Pad / Left Stick` | Navigate |
+| `D-Pad Up` | Open category selector |
+| `A/Cross` | Launch app / Confirm |
+| `B/Circle` | Back / Cancel |
+| `X/Square` | Quick Category editor |
+| `Y/Triangle` | Delete app |
+| `LB/L1` | Open Quick Search |
+| `RB/R2` | Toggle Reorder Mode |
+| `start` | Open Settings Menu |
 | `LT+Dpad up/down` | Volume up/down |
 
 
@@ -258,12 +283,28 @@ All controls can be remapped! Here's how:
    - Select an image file (16:9 recommended)
    - Background updates immediately
   
-6. **🆕 Customize Controls (Optional)**
+6. **Customize Controls (Optional)**
    - Press `S` to open Settings
    - Navigate to "🎮 Key Remapper"
    - Remap any key to your preference
    - Changes apply instantly
-     
+  
+   
+### Using Categories
+
+1. Press `↑ (keyboard)` or `D-Pad Up` (gamepad) to open category selector
+2. Use `←/→` or `D-Pad Left/Right` to switch between categories
+3. Press `↓` or `D-Pad Down` to close and view filtered apps
+4. Press `C` or `X/Square` on any app to quickly assign a category
+
+### Managing Categories:
+
+1. Open Settings (`S` or `Start`)
+2. Select "Manage Categories"
+3. Add, edit, or delete categories
+4. Customize icons and colors
+5. Set default category for new apps
+ 
 ### Using Quick Search
 
 1. Press `F` (keyboard) or `LB` (gamepad) anywhere
@@ -356,38 +397,9 @@ Exec=/path/to/venv/bin/python /path/to/TvLauncher_Linux.py
 
 ## ⚙️ Configuration
 
-Configuration is stored in `launcher_apps.json`:
+Configuration is stored in `launcher_apps.json`
 
-```json
-{
-  "apps": [
-    {
-      "name": "Steam",
-      "path": "C:\\Program Files\\Steam\\steam.exe",
-      "icon": "assets/Steam/banner.png"
-    }
-  ],
-  "background": "C:\\path\\to\\background.jpg",
-  "steamgriddb_api_key": "your-api-key-here"
-}
-```
-
-**🆕 Key mappings** are stored separately in `key_mappings.json`:
-
-```json
-{
-  "current_profile": "keyboard",
-  "mappings": {
-    "keyboard": {
-      "navigate_left": "key_16777234",
-      "navigate_right": "key_16777236",
-      "launch": "key_16777220",
-      "quick_search": "key_70",
-      "reorder_mode": "key_82"
-    }
-  }
-}
-```
+Key mappings are stored separately in `key_mappings.json`
 
 💡 **Tip:** Use the Backup feature in Settings to save your entire configuration (apps + mappings + settings).
 
@@ -450,26 +462,11 @@ or edit the .desktop file
 - **Windows:** Try running as administrator
 - **Linux:** Ensure binary has execute permissions (`chmod +x`)
 
-### Search Not Working
-- Check that `modules/search_widget.py` exists
-- Try pressing `F` or `LB` to open search
-- If search is stuck, press `Esc` to close and retry
-
-### Reorder Mode Not Activating
-- Try pressing `R` or `RB` to toggle
-- Cannot activate during menu, dialogs, or when no apps exist
-
 ### Key Remapper Issues
 - If remapped keys don't work, try restarting the launcher
 - Check `key_mappings.json` file exists
 - Use "Reset to Defaults" in Key Remapper if needed
 - Key mappings are automatically included in configuration backups
-
-### Settings Menu Issues
-- Press `S` or `Start` to open settings
-- If menu won't close, press `Esc` or `B`
-- Settings changes save automatically
-- Use Soft Reset to restore settings while keeping apps
 
 ### Program Scanner Issues
 - First scan may take 1-2 minutes
@@ -481,7 +478,6 @@ or edit the .desktop file
 - Launcher auto-scales to your resolution
 - Base resolution: 1920x1080
 - All UI elements scale proportionally
-- **Linux/Wayland:** Some scaling issues may occur, try X11 session
 
 ### Linux-Specific Issues
 
