@@ -419,7 +419,7 @@ This version includes everything needed:
 **No installation required!** Just extract and run:
 ```bash
 # Extract
-TVLauncher Linux v0.6 Portable.zip
+TVLauncher Linux v0.7 Portable.zip
 
 # Run
 ./launcher.sh
