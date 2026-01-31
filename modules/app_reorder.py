@@ -1,9 +1,4 @@
-"""
-App Reordering Module for TV Launcher
-Handles drag-and-drop style reordering with keyboard/joypad controls
 
-Save this file as 'app_reorder.py' in the same directory as tvlauncher.py
-"""
 
 from PyQt6.QtWidgets import QWidget, QLabel
 from PyQt6.QtCore import Qt, QTimer
@@ -542,4 +537,5 @@ def integrate_reorder_mode(launcher):
                         font-size: {launcher.scaling.scale_font(11)}px;
                         background: transparent;
                     """)
+
                 break
