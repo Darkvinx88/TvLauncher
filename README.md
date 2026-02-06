@@ -28,7 +28,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **Automatic Image Downloads** - Fetches 16:9 cover art from SteamGridDB
 - **Smart Program Scanner** - Automatically detects installed applications with proper icon extraction
 - **Quick Search Widget** - Instant app filtering with F/LB
-- **Drag & Drop Reordering** - Reorganize apps with R/RB
+- **Drag & Drop Reordering** - Reorganize apps with R/
 - **System Controls** - Built-in Restart/Shutdown/Sleep options
 - **Customizable Controls** - Remap any keyboard key or remote button to your liking
 
@@ -92,7 +92,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
   - Live filtering as you type
   - Alphabetically sorted results
   - Keyboard and gamepad support
-- **Drag & Drop Reordering** - Press `R` or `RB` to rearrange apps
+- **Drag & Drop Reordering** - Press `R` or `` to rearrange apps
   - Press `Enter`/`A` to activate reorder mode
   - Visual position indicators
   - Supports both linear and circular navigation
@@ -247,7 +247,7 @@ or edit the .desktop file
 | `X/Square` | Quick Category editor |
 | `Y/Triangle` | Delete app |
 | `LB/L1` | Open Quick Search |
-| `RB/R2` | Toggle Reorder Mode |
+| `RB/R1` | Toggle Reorder Mode |
 | `start` | Open Settings Menu |
 | `LT+Dpad up/down` | Volume up/down |
 
