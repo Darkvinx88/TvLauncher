@@ -146,7 +146,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 
 ## Installation
 
-### 1. Clone the Repository (branch 1 for windows,branch 2 for Linux)
+### 1. Clone the Repository (branch 1 for Windows,branch 2 for Linux)
 ```bash
 git clone https://github.com/Darkvinx88/TvLauncher.git
 cd TvLauncher
