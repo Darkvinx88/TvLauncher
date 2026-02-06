@@ -18,9 +18,9 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 
 
 
-## ✨ Features
+## Features
 
-### 🎨 Beautiful Interface
+### Beautiful Interface
 - **Full-screen TV-Mode** - Console-style carousel with smooth animations
 - **System Menu** - Press `S` or `Start` button to access the system Menu
 - **Responsive Scaling** - Automatically adapts to any screen resolution (from 720p to 4K+)
@@ -32,7 +32,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **System Controls** - Built-in Restart/Shutdown/Sleep options
 - **Customizable Controls** - Remap any keyboard key or remote button to your liking
 
-## 📸 Screenshots
+## Screenshots
 
 
 <img width="1920" height="1080" alt="Screenshot (317)" src="https://github.com/user-attachments/assets/6447fb8d-4c88-4a9d-80ce-4982675774d6" />
@@ -69,14 +69,14 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 
 *In motion*
 
-### 🎮 Input Support
+### Input Support
 - **Gamepad Compatible** - Xbox, PlayStation, or any standard controller
 - **Keyboard Navigation** - Full keyboard support
 - **TV Remote Support** - Works with Bluetooth TV remotes
 - **Fully Customizable** - Remap any key or button in Settings → Key Remapper
 - **Auto-detection** - Automatically detects connected gamepads with visual notifications
 
-### 🔍 Smart Organization
+### Smart Organization
 - **Category System** 
   - Organize apps into categories (Games, Media, Programs, Other)
   - Press Up/D-Pad Up to open category selector
@@ -102,14 +102,14 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
   - Alphabetically sorted display
 - **Edit & Delete** - Manage your app library easily
 
-### 🖼️ Automatic Image Management
+### Automatic Image Management
 - **SteamGridDB Integration** - Auto-downloads 16:9 cover art
 - **Manual Download Button** - Download covers for existing apps at any time
 - **Smart Auto-download Logic** - Automatically fetches images when adding apps
 - **Local Image Support** - Use your own custom images
 
 
-### ⚡ System Controls
+### System Controls
 - **Settings Menu** Comprehensive configuration panel with:
    - Visual toggles for all settings
    - Backup/Restore configuration
@@ -131,7 +131,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
     - Code Refactoring - Improved performance and stability
 
       
-   ## 🔧 Requirements
+   ## Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
 - **Python:** 3.8 or higher
@@ -144,7 +144,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - `pycaw`   (Windows only) - Windows core audio control
 - `pywin32` (Windows only) - Shortcut scanning and icon extraction
 
-## 📦 Installation
+## Installation
 
 ### 1. Clone the Repository(branch 1 for windows,branch 2 for Linux)
 ```bash
@@ -220,7 +220,7 @@ TVLauncher Linux v0.8 Portable.zip
 or edit the .desktop file
 ```
 
-## 🎮 Controls
+## Controls
 
 ### Default Keyboard Controls
 | Key | Action |
@@ -254,7 +254,7 @@ or edit the .desktop file
 
 
 
-**🎮 Customizing Controls**
+**Customizing Controls**
 All controls can be remapped! Here's how:
  - Open Settings - Press S or Start button
  - Navigate to Advanced section
@@ -266,7 +266,7 @@ All controls can be remapped! Here's how:
  - Save and Close when done
  - Works with any keyboard key or TV remote button
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 ### First Time Setup
 
@@ -353,7 +353,7 @@ All controls can be remapped! Here's how:
 - Works with both linear (≤5 apps) and circular (>5 apps) modes
 - Instructions overlay appears when active
 
-## 🚀 Autostart Setup
+## Autostart Setup
 
 The Launcher can start at boot on both Windows and Linux
 
@@ -503,14 +503,14 @@ chmod +x TvLauncher_Linux.py
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [SteamGridDB](https://www.steamgriddb.com/) - For providing game artwork API
 - [PyQt6](https://www.riverbankcomputing.com/software/pyqt/) - For the UI framework
 - [pygame](https://www.pygame.org/) - For gamepad support
 - Community contributors and testers
 
-## 🐛 Known Issues
+## Known Issues
 
 - **Windows:** Some executables may need administrator privileges
 - **All:** Background images should be high resolution (1920x1080+) for best results
