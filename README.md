@@ -87,7 +87,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Category Manager** - Customize categories in Settings
    - Add, edit, or delete categories
    - Choose custom icons and colors
-   - Set default category for new apps
+   - Select the default category shown on launch
 - **Quick Search** - Press `F` or `LB` to instantly search your apps
   - Live filtering as you type
   - Alphabetically sorted results
@@ -119,29 +119,18 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
- ### New in Version 0.7
+ ### New in Version 0.8
 - **Fixed:**
-   - ✅ Fixed PS4/PS5 controller mappings - controllers now mapped correctly
-   - ✅ Complete rewrite of controller support for both Windows and Linux
-   - ✅ Improved controller responsiveness and accuracy
-
+   - Fixed a Bug that prevented clock to update time (Windows and Linux)
+   
 - **Added:**
-  -  **Category System** - Organize apps into categories and quickly access them
-    - Press Up/D-Pad Up to open category selector
-    - Navigate with Left/Right or D-Pad
-    - Quick category assignment with C/X button
+    - Auto change background - change background with animation automatically every 5 minutes (Windows and Linux)
+    - Added the ability to add .desktop and .sh files to the launcher (Linux)
+    - Added the ability to choose the initial landing category.
+    - Switched non portable versions to a virtual environment installation for better stability and reliability (Windows and Linux)
+    - Code Refactoring - Improved performance and stability
 
-
-- **📂Category Editor** - Edit, rename, and delete categories in Settings
-   - Customize category icons and colors
-   - Set default category for uncategorized apps
-   - Visual category organization
-- **🖼️New Default Wallpaper** - Beautiful stock wallpaper on first launch
-- **🚪Exit Confirmation Dialog** - Prevents accidental launcher closure
-- **⚡Code Refactoring** - Improved performance and stability
-- **🔧Controller Optimization** - Better joystick polling and event handling
-   
-   
+      
    ## 🔧 Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
@@ -150,56 +139,85 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 ### Dependencies
 - `PyQt6` - UI framework
 - `psutil` - Process management
-- `pygame` (optional) - Gamepad support
-- `requests` (optional) - Automatic image downloads
+- `pygame` - Gamepad support
+- `requests`- Automatic image downloads
+- `pycaw`   (Windows only) - Windows core audio control
 - `pywin32` (Windows only) - Shortcut scanning and icon extraction
 
 ## 📦 Installation
 
-### 1. Clone the Repository
+### 1. Clone the Repository(branch 1 for windows,branch 2 for Linux)
 ```bash
 git clone https://github.com/Darkvinx88/TvLauncher.git
 cd TvLauncher
 ```
-
-### 2. Install Dependencies
-
-**Windows:**
-```bash
-pip install -r requirements.txt
-```
-
-**Linux:**
-```bash
-# Install system dependencies first
-# Ubuntu/Debian:
-sudo apt-get update
-sudo apt-get install python3-pyqt6 python3-pip
-
-# Fedora:
-sudo dnf install python3-pyqt6 python3-pip
-
-# Arch:
-sudo pacman -S python-pyqt6 python-pip
-
-# Then install Python packages
-pip install -r requirements.txt
-```
-
-### 3. Run the Launcher
+ 
+### 2. Create Virtual Environment and Install Dependencies
 
 **Windows:**
 ```bash
+#Create Virtual environment:
+python -m venv venv
+
+#Activate Virtual environment:
+venv\Scripts\activate
+
+#Install dependencies:
+pip install -r requirements.txt
+
+#Run the launcher
 python TvLauncher_Windows.py
-# or use the included .bat file for easier startup
+
+#It's highly suggested once everything is installed to run the launcher with the given .bat file
+#since it will automatically create the virtual environment and run the launcher with 1 click
+
+
 ```
 
 **Linux:**
 ```bash
+
+# Create virtual environment:
+python3 -m venv venv
+
+# Activate virtual environment:
+source venv/bin/activate
+
+# Install dependencies:
+pip install -r requirements.txt
+
+# Run the launcher 
 python3 TvLauncher_Linux.py
-# or make it executable
-chmod +x TvLauncher_Linux.py
-./TvLauncher_Linux.py
+
+#It's highly suggested once everything is installed to run the launcher with the given launcher.sh file
+#since it will automatically create the virtual environment and run the launcher with 1 click
+
+#make it executable
+chmod +x launcher.sh
+./launcher.sh
+
+#you can also use the given .desktop so you are able to run the launcher no matter where it is placed.
+
+```
+
+## Windows Portable Mode
+The Windows version is fully portable - simply press the .exe to start the launcher. You can move the entire folder anywhere.
+
+## Linux Portable Mode
+This version includes everything needed:
+- Python runtime
+- All Python packages (PyQt6, pygame, requests, etc.)
+- Qt6 with XCB/Wayland support (if in trouble sudo apt install libxcb)
+
+Just extract and run:
+```bash
+# Extract
+TVLauncher Linux v0.8 Portable.zip
+
+# Run
+./launcher.sh
+
+or edit the .desktop file
 ```
 
 ## 🎮 Controls
@@ -288,7 +306,12 @@ All controls can be remapped! Here's how:
    - Navigate to "🎮 Key Remapper"
    - Remap any key to your preference
    - Changes apply instantly
-  
+     
+ 7. **Auto change Wallpapers (Optional)**
+   - Place your image files in the wallpaper folder
+   - Go to settings and activate the Auto change wallpapers
+   - Now every 5 minutes your wallpapers will change in a random rotation
+    
    
 ### Using Categories
 
@@ -303,7 +326,9 @@ All controls can be remapped! Here's how:
 2. Select "Manage Categories"
 3. Add, edit, or delete categories
 4. Customize icons and colors
-5. Set default category for new apps
+5. Select your preferred category
+6. click on the green checkmark and save
+7. at launch the selected category will be the first to be shown
  
 ### Using Quick Search
 
@@ -339,7 +364,7 @@ The Launcher can start at boot on both Windows and Linux
 2. Type `shell:startup` and press Enter
 3. Right-click your launcher `.bat` or `.exe` file → Create shortcut
 4. Drag the shortcut into the Startup folder
-5. ✅ Launcher will start automatically after login
+5. Launcher will start automatically after login
 
 💡 **Tip:** Right-click shortcut → Properties → Set Run: `Minimized` to hide console window.
 
@@ -354,7 +379,7 @@ Windows Registry Editor Version 5.00
 ```
 3. Replace `C:\\path\\to\\launch.bat` with your actual path
 4. Double-click the `.reg` file to add the registry entry
-5. ✅ Launcher will start automatically on every boot
+5. Launcher will start automatically on every boot
 
 ### Linux Autostart
 
@@ -376,7 +401,7 @@ nano ~/.config/autostart/TVLauncher.desktop
 Type=Application
 Name=TVLauncher
 Comment=Automatically start the TV Launcher on login
-Exec=/usr/bin/python3 /path/to/TvLauncher_Linux.py
+Exec=/path/to/venv/bin/python /path/to/TvLauncher_Linux.py
 Path=/path/to/
 Terminal=false
 X-GNOME-Autostart-enabled=true
@@ -388,12 +413,7 @@ X-GNOME-Autostart-enabled=true
 chmod +x ~/.config/autostart/TVLauncher.desktop
 ```
 
-**Using Virtual Environment?** Change the `Exec` line to:
-```ini
-Exec=/path/to/venv/bin/python /path/to/TvLauncher_Linux.py
-```
-
-✅ Launcher will now start automatically on login.
+Launcher will now start automatically on login.
 
 ## ⚙️ Configuration
 
@@ -406,35 +426,6 @@ Key mappings are stored separately in `key_mappings.json`
 ### Image Organization
 Images are stored in `assets/APP_NAME/banner.{png|jpg|jpeg|webp}` with automatic fallback.
 
-## Windows Portable Mode
-The Windows version is fully portable - simply press the .exe to start the launcher. You can move the entire folder anywhere.
-
-## Linux Portable Mode
-This version includes everything needed:
-- Python 3.10 runtime
-- All Python packages (PyQt6, pygame, requests, etc.)
-- Qt6 with XCB/Wayland support (if in trouble sudo apt install libxcb)
-- All system libraries bundled
-  
-**No installation required!** Just extract and run:
-```bash
-# Extract
-TVLauncher Linux v0.7 Portable.zip
-
-# Run
-./launcher.sh
-
-or edit the .desktop file
-```
-
-### System Requirements
-- **Any Linux distro** (Ubuntu, Fedora, Arch, Debian, etc.)
-- **X11 or Wayland** (auto-detected)
-- **No external dependencies**
-
-### Size
-- Compressed: ~150MB
-- Extracted: ~350MB
 
 ## 🛠️ Troubleshooting
 
@@ -523,8 +514,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Windows:** Some executables may need administrator privileges
 - **All:** Background images should be high resolution (1920x1080+) for best results
-- **Linux/Wayland:** Some scaling issues may occur, X11 recommended
-- **Key Remapper:** Changes require launcher restart on some systems
+
 
 ## 📧 Contact
 
