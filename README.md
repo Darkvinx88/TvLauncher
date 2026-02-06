@@ -169,7 +169,7 @@ pip install -r requirements.txt
 python TvLauncher_Windows.py
 
 #It's highly suggested once everything is installed to run the launcher with the given .bat file
-#since it will automatically create the virtual environment and run the launcher with 1 click
+#since it will automatically activate the virtual environment and run the launcher with 1 click
 
 
 ```
@@ -190,7 +190,7 @@ pip install -r requirements.txt
 python3 TvLauncher_Linux.py
 
 #It's highly suggested once everything is installed to run the launcher with the given launcher.sh file
-#since it will automatically create the virtual environment and run the launcher with 1 click
+#since it will automatically activate the virtual environment and run the launcher with 1 click
 
 #make it executable
 chmod +x launcher.sh
