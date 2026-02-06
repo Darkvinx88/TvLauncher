@@ -1,4 +1,4 @@
-# 🎮 TV Launcher
+# TV Launcher
 
 A sleek, console-style application launcher for Windows and Linux with gamepad support, automatic image fetching, and powerful organization features.
 
