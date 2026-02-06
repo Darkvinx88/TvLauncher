@@ -124,7 +124,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
    - Fixed a Bug that prevented clock to update time (Windows and Linux)
    
 - **Added:**
-    - Auto change background - change background with animation automatically every 5 minutes (Windows and Linux)
+    - Auto change Wallpaper - change background with animation automatically every 5 minutes (Windows and Linux)
     - Added the ability to add .desktop and .sh files to the launcher (Linux)
     - Added the ability to choose the initial landing category.
     - Switched non portable versions to a virtual environment installation for better stability and reliability (Windows and Linux)
@@ -146,7 +146,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 
 ## Installation
 
-### 1. Clone the Repository(branch 1 for windows,branch 2 for Linux)
+### 1. Clone the Repository (branch 1 for windows,branch 2 for Linux)
 ```bash
 git clone https://github.com/Darkvinx88/TvLauncher.git
 cd TvLauncher
