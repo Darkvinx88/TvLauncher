@@ -301,17 +301,17 @@ All controls can be remapped! Here's how:
    - Select an image file (16:9 recommended)
    - Background updates immediately
   
-6. **Customize Controls (Optional)**
+6. **Auto change Wallpapers (Optional)**
+   - Place your image files in the wallpaper folder
+   - Go to settings and activate the Auto change wallpapers
+   - Now every 5 minutes your wallpapers will change in a random rotation
+     
+7. **Customize Controls (Optional)**
    - Press `S` to open Settings
    - Navigate to "🎮 Key Remapper"
    - Remap any key to your preference
    - Changes apply instantly
-     
- 7. **Auto change Wallpapers (Optional)**
-   - Place your image files in the wallpaper folder
-   - Go to settings and activate the Auto change wallpapers
-   - Now every 5 minutes your wallpapers will change in a random rotation
-    
+          
    
 ### Using Categories
 
