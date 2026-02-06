@@ -196,7 +196,7 @@ python3 TvLauncher_Linux.py
 chmod +x launcher.sh
 ./launcher.sh
 
-#you can also use the given .desktop so you are able to run the launcher no matter where it is placed.
+#you can also edit the given .desktop so you are able to run the launcher no matter where it is placed.
 
 ```
 
