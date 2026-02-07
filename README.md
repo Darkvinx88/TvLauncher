@@ -92,7 +92,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
   - Live filtering as you type
   - Alphabetically sorted results
   - Keyboard and gamepad support
-- **Drag & Drop Reordering** - Press `R` or `` to rearrange apps
+- **Drag & Drop Reordering** - Press `R` or `RB` to rearrange apps
   - Press `Enter`/`A` to activate reorder mode
   - Visual position indicators
   - Supports both linear and circular navigation
