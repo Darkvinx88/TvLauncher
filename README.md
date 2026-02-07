@@ -27,8 +27,8 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **Gamepad Support** - Navigate with Xbox/PlayStation controllers or keyboard/Bluetooth TV Remotes
 - **Automatic Image Downloads** - Fetches 16:9 cover art from SteamGridDB
 - **Smart Program Scanner** - Automatically detects installed applications with proper icon extraction
-- **Quick Search Widget** - Instant app filtering with F/LB
-- **Drag & Drop Reordering** - Reorganize apps with R/
+- **Quick Search Widget** - Instant app filtering with `F/LB`
+- **Drag & Drop Reordering** - Reorganize apps with `R/RB`
 - **System Controls** - Built-in Restart/Shutdown/Sleep options
 - **Customizable Controls** - Remap any keyboard key or remote button to your liking
 
@@ -249,7 +249,7 @@ or edit the .desktop file
 | `LB/L1` | Open Quick Search |
 | `RB/R1` | Toggle Reorder Mode |
 | `start` | Open Settings Menu |
-| `LT+Dpad up/down` | Volume up/down |
+| `LT\L2+Dpad ↑/↓` | Volume up/down |
 
 
 
