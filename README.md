@@ -269,44 +269,43 @@ All controls can be remapped! Here's how:
 ## Quick Start Guide
 
 ### First Time Setup
-
-1. **Add Your First App**
-   - Click the `+` icon in the top-right
-   - Browse for the executable
-   - Insert the API Key before adding any program for auto-download to work
-   - Optionally add a custom image
-   - Click "Add"
-
+1. Open settings Menu with `s`  or `start`
+   
 2. **Set Up SteamGridDB (Recommended)**
-   - Click the `🔑` icon
+   - Click "API Key"
    - Get a free API key from [SteamGridDB](https://www.steamgriddb.com/profile/preferences/api)
    - Paste it in the dialog
    - The launcher will now auto-download 16:9 cover art
-
+     
 3. **Scan Installed Programs**
-   - Click the `🔍` icon
+   - Click "Scan Programs" 
    - Wait for the scan to complete (may take a minute on first run)
    - Results are cached for instant loading next time
    - Select programs to add
    - Click "Add Selected"
    - Images download automatically in background
+  
+4. **Add App Manually**
+   - Click "Add app"
+   - Browse for the executable
+   - Optionally add a custom image
+   - Click "Add"
 
-4. **Download Covers for Existing Apps**
-   - Click the `⬇️` download icon in the header
-   - Select which apps need covers
+5. **Download Covers for Existing Apps**
+   - Click "Download Covers" 
    - Covers download automatically from SteamGridDB
 
-5. **Customize Background**
-   - Click the `🖼️` icon
+6. **Customize Background**
+   - Click "Set Background"
    - Select an image file (16:9 recommended)
    - Background updates immediately
   
-6. **Auto change Wallpapers (Optional)**
+7. **Auto change Wallpapers (Optional)**
    - Place your image files in the wallpaper folder
    - Go to settings and activate the Auto change wallpapers
    - Now every 5 minutes your wallpapers will change in a random rotation
      
-7. **Customize Controls (Optional)**
+8. **Customize Controls (Optional)**
    - Press `S` to open Settings
    - Navigate to "🎮 Key Remapper"
    - Remap any key to your preference
