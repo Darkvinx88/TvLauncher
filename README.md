@@ -123,11 +123,12 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 
  ### New in Version 0.9
 - **Fixed:**
-   - Fixed file permissions for installer.sh and launcher.sh on both portable and standard Linux versions.
+   - Fixed file permissions for Installer.sh and launcher.sh on both portable and standard Linux versions.
+   - Released Linux versions are now .tar.gz to retain execution permissions.
    
 - **Added:**
-    - One-click installer for Windows — Added installer.bat to set up the launcher automatically with a single double-click.
-    - One-click installer for Linux — Added install.sh to streamline the installation process on Linux systems.
+    - One-click installer for Windows — Added Installer.bat to set up the launcher automatically with a single double-click.
+    - One-click installer for Linux — Added Installer.sh to streamline the installation process on Linux systems.
     - Weather Widget — A brand new weather widget now appears in the top-right corner of the launcher. 
       To enable it, go to Settings → Weather Settings, enter your city and hit Apply. 
       Weather and temperature will refresh automatically every 30 minutes.
