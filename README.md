@@ -35,13 +35,15 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 ## Screenshots
 
 
-<img width="1920" height="1080" alt="Screenshot (317)" src="https://github.com/user-attachments/assets/6447fb8d-4c88-4a9d-80ce-4982675774d6" />
+<img width="1920" height="1080" alt="Screenshot (330)" src="https://github.com/user-attachments/assets/97448207-f8f0-4135-93e0-81bc2e39f0a4" />
+
 
 
 *Carousel view with cover art*
 
+<img width="1920" height="1080" alt="Screenshot (331)" src="https://github.com/user-attachments/assets/f38a5a78-982f-4cac-ac5c-a5f61894ca3a" />
 
-<img width="1920" height="1080" alt="Screenshot (313)" src="https://github.com/user-attachments/assets/85657856-b507-4b95-897e-261f4e26b290" />
+
 
 
 *System Menu*
@@ -119,16 +121,18 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
- ### New in Version 0.8
+ ### New in Version 0.9
 - **Fixed:**
-   - Fixed a Bug that prevented clock to update time (Windows and Linux)
+   - Fixed file permissions for installer.sh and launcher.sh on both portable and standard Linux versions.
    
 - **Added:**
-    - Auto change Wallpaper - change background with animation automatically every 5 minutes (Windows and Linux)
-    - Added the ability to add .desktop and .sh files to the launcher (Linux)
-    - Added the ability to choose the initial landing category.
-    - Switched non portable versions to a virtual environment installation for better stability and reliability (Windows and Linux)
-    - Code Refactoring - Improved performance and stability
+    - One-click installer for Windows — Added installer.bat to set up the launcher automatically with a single double-click.
+    - One-click installer for Linux — Added install.sh to streamline the installation process on Linux systems.
+    - Weather Widget — A brand new weather widget now appears in the top-right corner of the launcher. 
+      To enable it, go to Settings → Weather Settings, enter your city and hit Apply. 
+      Weather and temperature will refresh automatically every 30 minutes.
+    - General refactoring, removal of garbage code, and various performance optimizations.
+  
 
       
    ## Requirements
@@ -168,8 +172,10 @@ pip install -r requirements.txt
 #Run the launcher
 python TvLauncher_Windows.py
 
-#It's highly suggested once everything is installed to run the launcher with the given .bat file
-#since it will automatically activate the virtual environment and run the launcher with 1 click
+#Alternatively you can just run the installer.bat and let it do everything for you
+#(creates a virtual environment,activates it,installs dependencies)
+#Once everything is installed simply run the launcher with the given .bat file
+#it will automatically activate the virtual environment and run the launcher with 1 click
 
 
 ```
@@ -189,10 +195,15 @@ pip install -r requirements.txt
 # Run the launcher 
 python3 TvLauncher_Linux.py
 
-#It's highly suggested once everything is installed to run the launcher with the given launcher.sh file
-#since it will automatically activate the virtual environment and run the launcher with 1 click
+#Alternatively you can just run the installer.sh and let it do everything for you
+#(creates a virtual environment,activates it,installs dependencies)
+#Once everything is installed simply run the launcher with the given launcher.sh file
+#it will automatically activate the virtual environment and run the launcher with 1 click
 
-#make it executable
+#sh files are already executable but if they are not just do
+chmod +x installer.sh
+./installer.sh
+
 chmod +x launcher.sh
 ./launcher.sh
 
@@ -206,13 +217,14 @@ The Windows version is fully portable - simply press the .exe to start the launc
 ## Linux Portable Mode
 This version includes everything needed:
 - Python runtime
+- Environment and launcher.sh have launching permissions already baked in
 - All Python packages (PyQt6, pygame, requests, etc.)
 - Qt6 with XCB/Wayland support (if in trouble sudo apt install libxcb)
 
 Just extract and run:
 ```bash
 # Extract
-TVLauncher Linux v0.8 Portable.zip
+TVLauncher Linux v0.9 Portable.tar.gz
 
 # Run
 ./launcher.sh
@@ -305,7 +317,14 @@ All controls can be remapped! Here's how:
    - Go to settings and activate the Auto change wallpapers
    - Now every 5 minutes your wallpapers will change in a random rotation
      
-8. **Customize Controls (Optional)**
+8. **Setup Weather Widget (Optional)**
+   - Press `S` to open Settings
+   - Navigate to Weather Settings
+   - Type your city and optional nation code (IT,GB,US etc)
+   - Click Save and Apply
+   - Weather Widget will be on top righ corner (it may take 1 second to fetch weather data)
+     
+9. **Customize Controls (Optional)**
    - Press `S` to open Settings
    - Navigate to "🎮 Key Remapper"
    - Remap any key to your preference
