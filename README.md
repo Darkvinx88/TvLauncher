@@ -9,7 +9,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 </p>
 
 
-
+<img width="1920" height="1080" alt="Screenshot (330)" src="https://github.com/user-attachments/assets/97448207-f8f0-4135-93e0-81bc2e39f0a4" />
 
 
 ## Features
@@ -29,7 +29,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 ## Screenshots
 
 
-<img width="1920" height="1080" alt="Screenshot (330)" src="https://github.com/user-attachments/assets/97448207-f8f0-4135-93e0-81bc2e39f0a4" />
+
 
 
 
