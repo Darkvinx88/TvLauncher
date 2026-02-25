@@ -537,4 +537,10 @@ For issues, questions, or suggestions, please open an issue on GitHub.
 
 ⭐ **Star this repo if you find it useful!**
 
-Made with ❤️ by Darkvinx88
+Made with ❤️ by Darkvinx88 
+<p align="center">
+  <a href='https://ko-fi.com/W7W41RFDX2' target='_blank'>
+    <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+  </a>
+</p>
+
