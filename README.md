@@ -9,7 +9,8 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 </p>
 
 
-<img width="1920" height="1080" alt="Screenshot (330)" src="https://github.com/user-attachments/assets/97448207-f8f0-4135-93e0-81bc2e39f0a4" />
+<img width="1920" height="1080" alt="Screenshot (338)" src="https://github.com/user-attachments/assets/4bb5d45b-ef80-4481-beb4-28fc2ac89485" />
+
 
 
 ## Features
@@ -28,26 +29,17 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 
 ## Screenshots
 
-
-
-
-
-
-*Carousel view with cover art*
-
-<img width="1920" height="1080" alt="Screenshot (331)" src="https://github.com/user-attachments/assets/f38a5a78-982f-4cac-ac5c-a5f61894ca3a" />
-
-
+<img width="1920" height="1080" alt="Screenshot (339)" src="https://github.com/user-attachments/assets/b9c74376-fc18-4be8-8c99-639de0777a43" />
 
 
 *System Menu*
 
 
+<img width="1920" height="1080" alt="Screenshot (340)" src="https://github.com/user-attachments/assets/b77ce772-d9d2-48a4-bfe9-f3e8632b71dc" />
 
-<img width="1920" height="1080" alt="Screenshot (302)" src="https://github.com/user-attachments/assets/5d65517b-b4c4-40dc-a1c6-c09247486ec5" />
 
 
-*Key Mapper*
+*Key Mapper and battery Widget*
 
 
 <img width="1920" height="1080" alt="Screenshot (314)" src="https://github.com/user-attachments/assets/616d08f4-c1c3-45a7-8e8e-6981a002348c" />
@@ -115,18 +107,24 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
- ### New in Version 0.9
-- **Fixed:**
-   - Fixed file permissions for Installer.sh and launcher.sh on both portable and standard Linux versions.
-   - Released Linux versions are now .tar.gz to retain execution permissions.
+ ### New in Version 1.0
+- **Changed**
+   - Fixed duplicate API calls to Open-Meteo on startup.(Windows & Linux)
+   - Removed GPS coordinates from log output.
+     The coordinates belong to the searched city (geocoded from the city name),not the user's device location.(Windows & Linux)
+   - Improved Weather widget proportions and alignment.(Windows & Linux)
+   - Dialog windows now live in a dedicated module (Windows & Linux)
+   - Theme is now controlled by a dedicated module (Windows & Linux)
+   - Fixed load_config() being called twice on startup, now reuses already loaded config data. (Windows & Linux)
+   - Fixed clock visibility toggle using hardcoded layout indexes, now directly references the clock widgets. (Windows & Linux)
+   - Fixed weather widget cleanup not always running on exit if the joystick manager was unavailable. (Windows & Linux)
+   - Fixed cover images not updating immediately after download (Windows & Linux)
+   - Fixed Responsive scaling of dialogs and Widgets, now everything should scale proportionally to the display resolution. (Windows & Linux)
+   - Fixed tile glow effect causing visual deformation at DPI >= 125% (Windows & Linux)
    
 - **Added:**
-    - One-click installer for Windows — Added Installer.bat to set up the launcher automatically with a single double-click.
-    - One-click installer for Linux — Added Installer.sh to streamline the installation process on Linux systems.
-    - Weather Widget — A brand new weather widget now appears in the top-right corner of the launcher. 
-      To enable it, go to Settings → Weather Settings, enter your city and hit Apply. 
-      Weather and temperature will refresh automatically every 30 minutes.
-    - General refactoring, removal of garbage code, and various performance optimizations.
+  - New battery Widget with custom icons (battery full, battery mid, battery low, charging) and percentage is now
+    displayed on top right corner if the computer in use is a laptop. (Windows & Linux)  
   
 
       
