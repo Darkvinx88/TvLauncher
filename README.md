@@ -113,7 +113,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
    - Removed GPS coordinates from log output.
      The coordinates belong to the searched city (geocoded from the city name),not the user's device location.(Windows & Linux)
    - Improved Weather widget proportions and alignment.(Windows & Linux)
-   - Dialog windows now live in a dedicated module (Windows & Linux)
+   - Dialog windows now managed in a dedicated module (Windows & Linux)
    - Theme is now controlled by a dedicated module (Windows & Linux)
    - Fixed load_config() being called twice on startup, now reuses already loaded config data. (Windows & Linux)
    - Fixed clock visibility toggle using hardcoded layout indexes, now directly references the clock widgets. (Windows & Linux)
