@@ -18,6 +18,7 @@ from PyQt6.QtCore import (
 )
 from PyQt6.QtGui import QPixmap, QFont, QKeyEvent, QPainter, QColor, QIcon , QBrush
 import psutil
+import puremagic
 
 from modules.app_reorder import integrate_reorder_mode
 from modules.search_widget import QuickSearchWidget
@@ -1038,7 +1039,7 @@ class TVLauncher(QMainWindow):
                 needs_update = True
             elif icon_path == app_path:
                 needs_update = True
-            elif icon_path.lower().endswith('.exe'):
+            elif not self.is_image_or_icon(icon_path):
                 needs_update = True
             elif not Path(icon_path).exists():
                 needs_update = True
@@ -1080,6 +1081,34 @@ class TVLauncher(QMainWindow):
         self.progress_dialog.canceled.connect(self.cover_download_worker.stop)
         self.cover_download_worker.start()
         self.progress_dialog.show()
+
+    def is_image_or_icon(self, path: str) -> bool:
+        """
+        Checks if a file is likely an image or icon using:
+        1. Content-based MIME detection via puremagic
+        2. Fallback to common image/icon extensions
+        """
+        if not os.path.isfile(path) or os.path.getsize(path) == 0:
+            return False
+
+        # ── Content-based check (most reliable) ──
+        try:
+            mime_type = puremagic.from_file(path, mime=True)
+            if mime_type and mime_type.startswith('image/'):
+                return True
+        except puremagic.PureError:
+            pass
+        except OSError:
+            return False
+
+        ext = os.path.splitext(path)[1].lower()
+        image_extensions = {
+            '.png', '.jpg', '.jpeg', '.jpe', '.jfif',
+            '.gif', '.bmp', '.webp', '.tiff', '.tif',
+            '.ico', '.cur', '.svg', '.xpm', '.icns',
+            '.apng', '.avif', '.heic', '.heif',
+        }
+        return ext in image_extensions
 
     def _on_cover_download_progress(self, message, percent):
         if self.progress_dialog:
