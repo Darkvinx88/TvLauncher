@@ -1147,7 +1147,7 @@ class SettingsMenu(QWidget):
         
         info_layout.addWidget(update_btn)
         
-        version_label = QLabel("Version: 1.0")
+        version_label = QLabel("Version: 1.1")
         version_label.setStyleSheet(f"color: white; font-size: {self.scaling.scale_font(13)}px;")
         info_layout.addWidget(version_label)
   
