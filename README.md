@@ -107,7 +107,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
- ### New in Version 1.0
+ ### New in Version 1.1
 - **Fixed**
    - Flatpak binary path (/usr/bin/flatpak) was incorrectly treated as a valid icon,
      preventing cover download from SteamGridDB on some Linux distributions (e.g. Kubuntu).
