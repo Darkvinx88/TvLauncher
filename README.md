@@ -108,26 +108,11 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 
 
  ### New in Version 1.0
-- **Changed**
-   - Fixed duplicate API calls to Open-Meteo on startup.(Windows & Linux)
-   - Removed GPS coordinates from log output.
-     The coordinates belong to the searched city (geocoded from the city name),not the user's device location.(Windows & Linux)
-   - Improved Weather widget proportions and alignment.(Windows & Linux)
-   - Dialog windows now managed in a dedicated module (Windows & Linux)
-   - Theme is now controlled by a dedicated module (Windows & Linux)
-   - Fixed load_config() being called twice on startup, now reuses already loaded config data. (Windows & Linux)
-   - Fixed clock visibility toggle using hardcoded layout indexes, now directly references the clock widgets. (Windows & Linux)
-   - Fixed weather widget cleanup not always running on exit if the joystick manager was unavailable. (Windows & Linux)
-   - Fixed cover images not updating immediately after download (Windows & Linux)
-   - Fixed Responsive scaling of dialogs and Widgets, now everything should scale proportionally to the display resolution. (Windows & Linux)
-   - Fixed tile glow effect causing visual deformation at DPI >= 125% (Windows & Linux)
+- **Fixed**
+   - Flatpak binary path (/usr/bin/flatpak) was incorrectly treated as a valid icon,
+     preventing cover download from SteamGridDB on some Linux distributions (e.g. Kubuntu).
    
-- **Added:**
-  - New battery Widget with custom icons (battery full, battery mid, battery low, charging) and percentage is now
-    displayed on top right corner if the computer in use is a laptop. (Windows & Linux)  
   
-
-      
    ## Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
