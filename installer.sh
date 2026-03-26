@@ -79,5 +79,5 @@ echo "[OK] Dependencies installed."
 echo
 echo "================================"
 echo "  Installation complete!"
-echo "  Run ./Launcher.sh to start."
+echo "  Run ./launcher.sh to start."
 echo "================================"
