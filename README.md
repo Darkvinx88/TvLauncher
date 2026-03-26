@@ -179,11 +179,11 @@ python3 TvLauncher_Linux.py
 #it will automatically activate the virtual environment and run the launcher with 1 click
 
 #sh files are already executable but if they are not just do
-chmod +x Installer.sh
-./Installer.sh
+chmod +x installer.sh
+./installer.sh
 
-chmod +x Launcher.sh
-./Launcher.sh
+chmod +x launcher.sh
+./launcher.sh
 
 #you can also edit the given .desktop so you are able to run the launcher no matter where it is placed.
 
@@ -202,10 +202,10 @@ This version includes everything needed:
 Just extract and run:
 ```bash
 # Extract
-TVLauncher Linux v0.9 Portable.tar.gz
+TVLauncher Linux v1.1 Portable.tar.gz
 
 # Run
-./Launcher.sh
+./launcher.sh
 
 or edit the .desktop file
 ```
