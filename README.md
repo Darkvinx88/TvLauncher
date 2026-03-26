@@ -150,7 +150,7 @@ pip install -r requirements.txt
 #Run the launcher
 python TvLauncher_Windows.py
 
-#Alternatively you can just run the Installer.bat and let it do everything for you
+#Alternatively you can just run the installer.bat and let it do everything for you
 #(creates a virtual environment,activates it,installs dependencies)
 #Once everything is installed simply run the launcher with the given TVLauncher.bat file
 #it will automatically activate the virtual environment and run the launcher with 1 click
