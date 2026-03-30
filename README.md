@@ -107,11 +107,17 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
- ### New in Version 1.1
-- **Fixed**
-   - Flatpak binary path (/usr/bin/flatpak) was incorrectly treated as a valid icon,
-     preventing cover download from SteamGridDB on some Linux distributions (e.g. Kubuntu).
-   
+ ### New in Version 1.2
+- **Changed**
+  - Configuration files (launcher_apps.json, key_mappings.json, scanner_cache.json) and tile images are now stored in the user folder `%APPDATA%\Roaming\TVLauncher` on  
+    Windows and `~/.config/TVLauncher` on Linux, keeping user data separate from the application files and ensuring it survives updates.
+  - Existing configurations are automatically migrated on first launch — no action required
+  - Missing app covers are automatically re-downloaded at startup
+
+- **Added**
+  - A toast notification now appears in the bottom-right corner when a new update is available; a persistent banner also appears in the Settings menu until the  
+    update is installed. (Windows and Linux)
+  - A new Config Files shortcut in the Settings menu opens the configuration folder directly for quick access. (Windows and Linux)
   
    ## Requirements
 
@@ -202,7 +208,7 @@ This version includes everything needed:
 Just extract and run:
 ```bash
 # Extract
-TVLauncher Linux v1.1 Portable.tar.gz
+TVLauncher Linux v1.2 Portable.tar.gz
 
 # Run
 ./launcher.sh
@@ -411,16 +417,17 @@ chmod +x ~/.config/autostart/TVLauncher.desktop
 
 Launcher will now start automatically on login.
 
-## ⚙️ Configuration
+## Configuration
 
-Configuration is stored in `launcher_apps.json`
+Configuration files `launcher_apps.json, key_mappings.json, scanner_cache.json` and tile images are now stored in the user folder `%APPDATA%\Roaming\TVLauncher` on  
+Windows and  `~/.config/TVLauncher` on Linux, keeping user data separate from the application files and ensuring it survives updates.
+A shortcut to these folders is accessible using the given button in the settings menu.
 
-Key mappings are stored separately in `key_mappings.json`
+## Updating
 
-💡 **Tip:** Use the Backup feature in Settings to save your entire configuration (apps + mappings + settings).
+The launcher now checks for updates on startup and shows a notification in the bottom right corner which leads to the releases page of this repo.
+A persistent banner will also be present in the settings menu if an update is available and disappears when the update is done.
 
-### Image Organization
-Images are stored in `assets/APP_NAME/banner.{png|jpg|jpeg|webp}` with automatic fallback.
 
 
 ## 🛠️ Troubleshooting
