@@ -111,7 +111,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
- ### New in Version 1.3
+### New in Version 1.3
   
 - **Added**
 
@@ -130,7 +130,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
      - PyQt temporarily locked to version 6.10 on Windows via requirements due to a regression
        introduced in Qt 6.11 with the Windows DWM compositor.
       
-   ## Requirements
+## Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
 - **Python:** 3.8 or higher
