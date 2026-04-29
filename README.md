@@ -125,7 +125,11 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
      - Mouse,Keyboard,Remote and Game pads input supported
      - Parental Control Data is stored as a JSON in `%APPDATA%\Roaming\TVLauncher` on
        Windows and `~/.config/TVLauncher` on Linux.
-  
+       
+  - **Changed**
+    - PyQt temporarily locked to version 6.10 on Windows via requirements due to a regression introduced in Qt 6.11 with the     
+      Windows DWM compositor.
+      
    ## Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
