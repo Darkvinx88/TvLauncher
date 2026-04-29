@@ -26,6 +26,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **Drag & Drop Reordering** - Reorganize apps with `R/RB`
 - **System Controls** - Built-in Restart/Shutdown/Sleep options
 - **Customizable Controls** - Remap any keyboard key or remote button to your liking
+- **Parental Control System** - Lock the Launcher with a PIN code 
 
 ## Screenshots
 
@@ -42,9 +43,12 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 *Key Mapper and battery Widget*
 
 
-<img width="1920" height="1080" alt="Screenshot (314)" src="https://github.com/user-attachments/assets/616d08f4-c1c3-45a7-8e8e-6981a002348c" />
 
-*Category Manager*
+<img width="1920" height="1080" alt="Screenshot (346)" src="https://github.com/user-attachments/assets/eea66daa-3d08-42e0-a047-0d3bad988dd7" />
+
+
+
+*Parental Control*
 
 
 
@@ -107,17 +111,20 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
- ### New in Version 1.2
-- **Changed**
-  - Configuration files (launcher_apps.json, key_mappings.json, scanner_cache.json) and tile images are now stored in the user folder `%APPDATA%\Roaming\TVLauncher` on  
-    Windows and `~/.config/TVLauncher` on Linux, keeping user data separate from the application files and ensuring it survives updates.
-  - Existing configurations are automatically migrated on first launch — no action required
-  - Missing app covers are automatically re-downloaded at startup
-
+ ### New in Version 1.3
+  
 - **Added**
-  - A toast notification now appears in the bottom-right corner when a new update is available; a persistent banner also appears in the Settings menu until the  
-    update is installed. (Windows and Linux)
-  - A new Config Files shortcut in the Settings menu opens the configuration folder directly for quick access. (Windows and Linux)
+
+  - **Full Parental Control System**
+     - 4-digit PIN protection stored as SHA-256 with a randomly generated per-user salt (never stored in plain text).
+       Once set, user will be asked or the PIN at startup.
+     - Security question & answer backup stored as SHA-256 with independent salt
+     - 6 built-in security questions to choose from during setup
+     - Brute-force protection: 5 failed PIN attempts trigger a 30-second lockout with a live countdown
+     - Configure or Disable directly in the Settings Menu
+     - Mouse,Keyboard,Remote and Game pads input supported
+     - Parental Control Data is stored as a JSON in `%APPDATA%\Roaming\TVLauncher` on
+       Windows and `~/.config/TVLauncher` on Linux.
   
    ## Requirements
 
