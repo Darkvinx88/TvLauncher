@@ -117,7 +117,7 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 
   - **Full Parental Control System**
      - 4-digit PIN protection stored as SHA-256 with a randomly generated per-user salt (never stored in plain text).
-       Once set, user will be asked or the PIN at startup.
+       Once set, user will be asked for the PIN at startup.
      - Security question & answer backup stored as SHA-256 with independent salt
      - 6 built-in security questions to choose from during setup
      - Brute-force protection: 5 failed PIN attempts trigger a 30-second lockout with a live countdown
