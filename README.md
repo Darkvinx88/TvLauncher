@@ -112,24 +112,15 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
-### New in Version 1.3
+### New in Version 1.3.1
   
 - **Added**
 
-  - **Full Parental Control System**
-     - 4-digit PIN protection stored as SHA-256 with a randomly generated per-user salt (never stored in plain text).
-       Once set, user will be asked for the PIN at startup.
-     - Security question & answer backup stored as SHA-256 with independent salt
-     - 6 built-in security questions to choose from during setup
-     - Brute-force protection: 5 failed PIN attempts trigger a 30-second lockout with a live countdown
-     - Configure or Disable directly in the Settings Menu
-     - Mouse,Keyboard,Remote and Game pads input supported
-     - Parental Control Data is stored as a JSON in `%APPDATA%\Roaming\TVLauncher` on
-       Windows and `~/.config/TVLauncher` on Linux.
-       
-- **Changed**
-     - PyQt temporarily locked to version 6.10 on Windows via requirements due to a regression
-       introduced in Qt 6.11 with the Windows DWM compositor.
+  - **Full Mouse and Touch Control**
+     - the app now is totally navigable with mouse and touchscreen controls
+       you can drag and click on every Tile and click again to launch it.
+     - All Menues and settings work with mouse clicks or touch input  
+     
       
 ## Requirements
 
