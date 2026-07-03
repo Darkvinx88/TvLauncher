@@ -20,7 +20,7 @@ options=()
 install=
 changelog=
 source=("https://github.com/Darkvinx88/TvLauncher/releases/download/${pkgver}/TV_Launcher_Linux_v${pkgver}.tar.gz")
-sha256sums=('024a1f01a79a02e30067c35f082baaf4124ec80da54b9b01403bede0a35519e7')
+sha256sums=('9b808e47ecd0e8fce4fbaeaa0bdede2b4548f9c8b6e198ce8dceec5b4bb01d89')
 
 package() {
     cd "${srcdir}"
