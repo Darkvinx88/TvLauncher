@@ -20,6 +20,7 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **System Menu** - Press `S` or `Start` button to access the system Menu
 - **Responsive Scaling** - Automatically adapts to any screen resolution (from 720p to 4K+)
 - **Gamepad Support** - Navigate with Xbox/PlayStation controllers or keyboard/Bluetooth TV Remotes
+- **Mouse/Touch Support** - Navigate with mouse or touch controls
 - **Automatic Image Downloads** - Fetches 16:9 cover art from SteamGridDB
 - **Smart Program Scanner** - Automatically detects installed applications with proper icon extraction
 - **Quick Search Widget** - Instant app filtering with `F/LB`
