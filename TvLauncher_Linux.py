@@ -24,6 +24,7 @@ from modules.search_widget import QuickSearchWidget
 from modules.program_scanner import ProgramScanner, ProgramScanDialog
 from modules.settings_menu import SettingsMenu
 from modules.window_manager import WindowManager
+from modules.mouse_touch_manager import integrate_mouse_touch
 from modules.sound_effects import SoundManager
 from modules.key_remapper import KeyMapper
 from modules.tile_effects import TileGlowEffect
@@ -888,6 +889,7 @@ class TVLauncher(QMainWindow):
         main_layout.addWidget(instructions)
         main_layout.addSpacing(8)
         self.showFullScreen()
+        self.mouse_touch = integrate_mouse_touch(self)
    
     def load_config(self):
         if self.config_file.exists():
