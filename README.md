@@ -9,7 +9,8 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 </p>
 
 
-<img width="1920" height="1080" alt="Screenshot (338)" src="https://github.com/user-attachments/assets/4bb5d45b-ef80-4481-beb4-28fc2ac89485" />
+<img width="1920" height="1080" alt="Screenshot (461)" src="https://github.com/user-attachments/assets/6ba01444-9f31-4d25-bd62-c493a98d7d9a" />
+
 
 
 
@@ -27,7 +28,9 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **Drag & Drop Reordering** - Reorganize apps with `R/RB`
 - **System Controls** - Built-in Restart/Shutdown/Sleep options
 - **Customizable Controls** - Remap any keyboard key or remote button to your liking
-- **Parental Control System** - Lock the Launcher with a PIN code 
+- **Parental Control System** - Lock the Launcher with a PIN code
+- **Streaming Video Wallpapers** - Projectivy Overflight-style animated backgrounds, streamed directly (no permanent download)
+- **Movable Launcher Layout** - The carousel can now be shifted vertically to leave room for video wallpapers without overlapping content
 
 ## Screenshots
 
@@ -53,7 +56,11 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 
 
 
-https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
+
+
+https://github.com/user-attachments/assets/80400516-e3de-46ce-852c-f109591d8e28
+
+
 
 
 
@@ -100,7 +107,20 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Manual Download Button** - Download covers for existing apps at any time
 - **Smart Auto-download Logic** - Automatically fetches images when adding apps
 - **Local Image Support** - Use your own custom images
+- 
+## Video Wallpapers
 
+TV Launcher supports animated, streaming video wallpapers in the style of Projectivy Overflight.
+- **Source:** Videos are streamed from the official Projectivy Overflight JSON catalogue (a custom catalogue URL can also be set)
+- **No permanent download:** videos are streamed live, requires an active internet connection
+- **Configurable via dialog:** Settings → Video Wallpaper lets you set:
+  - Video quality (1080p, 1080p HDR, 4K, 4K HDR, or automatic/adaptive)
+  - Rotation interval (change video every N minutes)
+  - Mute/audio toggle
+  - Category filters (leave empty to include all categories)
+  - Custom catalogue URL, with a one-click "restore default" option
+  - Catalogue refresh and link validation, plus a "Test/Try video" button to preview instantly
+- **Vertical layout shift:** with video wallpapers enabled, the launcher carousel can be moved vertically to leave clean space for the video, similar to Projectivy Launcher on Android TV
 
 ### System Controls
 - **Settings Menu** Comprehensive configuration panel with:
@@ -112,20 +132,41 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
-### New in Version 1.3.1
-  
+### New in Version 1.4
+
 - **Added**
 
-  - **Full Mouse and Touch Control**
-     - the app now is totally navigable with mouse and touchscreen controls
-       you can drag and click on every Tile and click again to launch it.
-     - All Menues and settings work with mouse clicks or touch input  
+  - **Streaming Video Wallpapers**
+     - Projectivy Overflight-style animated video backgrounds, streamed live (no permanent download)
+     - Fully configurable via Settings → Video Wallpaper: quality (1080p/1080p HDR/4K/4K HDR/auto), rotation interval, mute toggle, category filters, and custom catalogue URL
+     - Built-in catalogue refresh, link validation, and instant "Test/Try video" preview
+     - Requires `libmpv` (bundled on Windows, installable via `installer.sh` on Linux)
+
+  - **Movable Launcher Layout**
+     - The carousel can now be shifted vertically to leave clean space for video wallpapers, similar to Projectivy Launcher on Android TV
      
       
 ## Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
 - **Python:** 3.8 or higher
+- Video wallpapers rely on `libmpv` for playback.
+
+- **Windows:** `libmpv` (`mpv-2.dll`) is already bundled with the app — no setup needed.
+- **Linux:** `libmpv` must be installed at the system level (it's a native library, not a pip package). The installer (`installer.sh`) checks for it automatically and installs it via your package manager:
+```bash
+  # Debian/Ubuntu/Mint
+  sudo apt install libmpv2   # or libmpv1 on older versions
+
+  # Fedora
+  sudo dnf install mpv-libs
+
+  # Arch
+  sudo pacman -S mpv
+```
+  If you're not using the installer, you'll need to install it manually with one of the commands above.
+
+> ⚠️ Performance depends on your GPU's hardware video decode support (especially for HEVC/HDR content). Older hardware without HEVC decode acceleration may experience choppy playback in software decode mode.
 
 ### Dependencies
 - `PyQt6` - UI framework
@@ -134,6 +175,8 @@ https://github.com/user-attachments/assets/09108e93-de59-4919-a60f-eb129cec89bc
 - `requests`- Automatic image downloads
 - `pycaw`   (Windows only) - Windows core audio control
 - `pywin32` (Windows only) - Shortcut scanning and icon extraction
+- `python-mpv` - Video wallpaper playback (requires `libmpv` installed at system level on Linux; bundled on Windows)
+
 
 ## Installation
 
@@ -445,6 +488,13 @@ A persistent banner will also be present in the settings menu if an update is av
   sudo usermod -a -G input $USER
   # Log out and back in
   ```
+### Video Wallpaper Not Working / mpv not available:
+```bash
+sudo apt install libmpv2   # or libmpv1 on older Ubuntu/Mint versions
+sudo dnf install mpv-libs  # Fedora
+sudo pacman -S mpv         # Arch
+```
+Check the console for the specific error shown in the Video Wallpaper dialog status label — it usually indicates the missing library directly.
 
 ### Images Not Downloading
 - Verify `requests` is installed: `pip install requests`
@@ -514,6 +564,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [SteamGridDB](https://www.steamgriddb.com/) - For providing game artwork API
 - [PyQt6](https://www.riverbankcomputing.com/software/pyqt/) - For the UI framework
 - [pygame](https://www.pygame.org/) - For gamepad support
+- [Projectivy Launcher](https://github.com/RonnyFriedland/ProjectivyLauncher) - Inspiration for the vertical layout and video wallpaper concept
+- [Overflight](https://github.com/JulienMaille/overflight) - For the video wallpaper catalogue this feature streams from
+- [mpv](https://mpv.io/) / [libmpv](https://github.com/mpv-player/mpv) - Powers video wallpaper playback.
+- The bundled `mpv-2.dll` (Windows) is distributed under the **LGPLv2.1+** license; 
 - Community contributors and testers
 
 ## Known Issues
