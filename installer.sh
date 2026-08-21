@@ -47,6 +47,37 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Checks if libmpv is installed (needed for video wallpapers)
+echo
+echo "Checking libmpv..."
+if ldconfig -p | grep -q libmpv; then
+    echo "[OK] libmpv already present."
+else
+    echo "[WARN] libmpv not found, attempting installation..."
+
+    if command -v apt &>/dev/null; then
+        sudo apt update
+        sudo apt install -y libmpv2 || sudo apt install -y libmpv1
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y mpv-libs
+    elif command -v pacman &>/dev/null; then
+        sudo pacman -S --noconfirm mpv
+    else
+        echo "[ERROR] Package manager not recognized."
+        echo "Please install libmpv manually for your system (e.g. libmpv2/libmpv1/mpv-libs/mpv)."
+        exit 1
+    fi
+
+    if ldconfig -p | grep -q libmpv; then
+        echo "[OK] libmpv installed successfully."
+    else
+        echo "[ERROR] libmpv installation failed."
+        echo "Video wallpapers will not work without it."
+        echo "Try installing it manually: sudo apt install libmpv2"
+        exit 1
+    fi
+fi
+
 # Crea virtual environment
 echo
 echo "Creating virtual environment..."
