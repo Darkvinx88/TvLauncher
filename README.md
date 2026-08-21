@@ -564,8 +564,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [SteamGridDB](https://www.steamgriddb.com/) - For providing game artwork API
 - [PyQt6](https://www.riverbankcomputing.com/software/pyqt/) - For the UI framework
 - [pygame](https://www.pygame.org/) - For gamepad support
-- [Projectivy Launcher](https://github.com/RonnyFriedland/ProjectivyLauncher) - Inspiration for the vertical layout and video wallpaper concept
-- [Overflight](https://github.com/JulienMaille/overflight) - For the video wallpaper catalogue this feature streams from
+- [Projectivy Launcher](https://github.com/spocky/miproja1) - Inspiration for the vertical layout and video wallpaper concept
+- [Overflight](https://github.com/spocky/projectivy-plugin-wallpaper-overflight) - For the video wallpaper catalogue this feature streams from
 - [mpv](https://mpv.io/) / [libmpv](https://github.com/mpv-player/mpv) - Powers video wallpaper playback.
 - The bundled `mpv-2.dll` (Windows) is distributed under the **LGPLv2.1+** license; 
 - Community contributors and testers
