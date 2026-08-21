@@ -1,6 +1,6 @@
 # Maintainer: Darkvinx88 <email here>
 pkgname=tvlauncher
-pkgver=1.3.1
+pkgver=1.4
 pkgrel=1
 epoch=
 pkgdesc="A lightweight launcher for Windows and Linux that transforms your computer into a smart TV, delivering a full leanback experience on desktop."
