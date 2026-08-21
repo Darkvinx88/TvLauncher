@@ -8,7 +8,7 @@ arch=('x86_64' 'aarch64')
 url="https://github.com/Darkvinx88/TvLauncher"
 license=('MIT')
 groups=()
-depends=('python>=3.8' 'python-pyqt6' 'python-psutil' 'python-pygame' 'python-requests' 'python-mpv' 'python-pillow')
+depends=('python>=3.8' 'python-pyqt6' 'python-psutil' 'python-pygame' 'python-requests' 'python-mpv' 'python-pillow' 'mpv')
 makedepends=()
 checkdepends=()
 optdepends=()
