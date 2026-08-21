@@ -38,6 +38,7 @@ from modules.category_manager import (
     add_category_joystick_support 
 )
 from modules.background_manager import BackgroundManager
+from modules.video_wallpaper_manager import VideoWallpaperManager
 from modules.update_notification import check_for_updates
 from modules.weather_widget import (
     integrate_weather_widget, 
@@ -434,6 +435,13 @@ class TVLauncher(QMainWindow):
             config_data=self.config_data,
             assets_dir=ASSETS_DIR
         )
+
+        self.video_wallpaper_manager = VideoWallpaperManager(
+            parent=self,
+            config_data=self.config_data,
+            assets_dir=ASSETS_DIR,
+            background_manager=self.background_manager
+        )
         
         sound_enabled = self.config_data.get('sound_effects', False)
         self.sound_manager = SoundManager(enabled=sound_enabled)
@@ -603,7 +611,70 @@ class TVLauncher(QMainWindow):
                 widget.setGraphicsEffect(opacity_effect)
             else:
                 widget.setGraphicsEffect(None)
-        
+
+    def set_carousel_vertical_position(self, value):
+        """Sposta il carosello più in alto/basso nella finestra (0=in alto, 100=in basso).
+        Non modifica dimensioni o aspect ratio delle tile: cambia solo la posizione verticale
+        tramite gli stretch factor sopra/sotto il carousel_container.
+
+        Il valore grezzo dello slider (0-100) viene rimappato internamente su
+        un intervallo 0-95: il 100% dello slider corrisponde quindi a quella
+        che prima era la profondità massima al 95%, perché oltre quel punto
+        il carosello iniziava a sovrapporsi troppo con la barra pulsanti in
+        basso.
+        """
+        value = max(0, min(100, int(value)))
+        self.carousel_vertical_position = value
+        self.config_data['carousel_vertical_position'] = value
+
+        effective_max = 95
+        effective_value = int(round(value * effective_max / 100))
+
+        if hasattr(self, 'main_layout') and hasattr(self, '_carousel_top_stretch_index'):
+            self.main_layout.setStretch(self._carousel_top_stretch_index, effective_value)
+            self.main_layout.setStretch(self._carousel_bottom_stretch_index, 100 - effective_value)
+        self.save_config()
+
+        # Il cambio di stretch factor aggiorna la geometria del carosello
+        # solo al prossimo giro di event loop: rimandiamo di conseguenza il
+        # riposizionamento del widget categorie (che deve seguirlo) con un
+        # singleShot(0), così legge la geometria già aggiornata.
+        if hasattr(self, 'category_selector'):
+            from PyQt6.QtCore import QTimer
+            from category_manager import _position_category_selector
+            QTimer.singleShot(0, lambda: _position_category_selector(self))
+
+    def _position_bottom_overlay(self):
+        """Ancora la barra pulsanti (restart/sleep/off/close) e le istruzioni
+        al bordo inferiore della finestra, come overlay a dimensione e
+        opacità sempre piene — non fanno più parte del flusso di
+        main_layout, quindi lo slider del carosello non le comprime né le
+        affievolisce mai. Se il carosello viene spinto alla massima
+        profondità può arrivare a sovrapporsi/finire dietro questa barra:
+        è voluto, la barra resta comunque visibile sopra (raise_()).
+        """
+        menu_container = getattr(self, 'menu_container', None)
+        instructions = getattr(self, 'instructions_label', None)
+        if menu_container is None or instructions is None:
+            return
+
+        win_w = self.width()
+        win_h = self.height()
+
+        instr_h = instructions.sizeHint().height()
+        instructions.setGeometry(0, win_h - instr_h - self.scaling.scale(4), win_w, instr_h)
+
+        menu_h = menu_container.sizeHint().height()
+        menu_y = instructions.y() - menu_h
+        menu_container.setGeometry(0, menu_y, win_w, menu_h)
+
+        menu_container.raise_()
+        instructions.raise_()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._position_bottom_overlay()
+
     def update_clock(self):
         from datetime import datetime
         import locale
@@ -653,6 +724,8 @@ class TVLauncher(QMainWindow):
             self.process_check_timer.stop()
             self.process_check_timer = None
         self.window_manager.on_app_close()
+        if hasattr(self, 'video_wallpaper_manager'):
+            self.video_wallpaper_manager.resume_from_app_focus()
         self.enable_inputs()
 
     def init_ui(self):
@@ -675,6 +748,7 @@ class TVLauncher(QMainWindow):
         self.overlay = overlay
         
         self.background_manager.initialize(overlay=self.overlay)
+        self.video_wallpaper_manager.initialize(overlay=self.overlay)
         main_widget = QWidget()
         main_widget.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         main_widget.setStyleSheet(Styles.TRANSPARENT)
@@ -685,7 +759,7 @@ class TVLauncher(QMainWindow):
             self.scaling.scale(5),
             self.scaling.scale(48),
             self.scaling.scale(5),
-            self.scaling.scale(48)
+            self.scaling.scale(32)
         )
         main_layout.setSpacing(0)
         header_layout = QHBoxLayout()
@@ -792,7 +866,9 @@ class TVLauncher(QMainWindow):
         
         main_layout.addLayout(header_layout)
         main_layout.addSpacing(40)
-        main_layout.addStretch(3)
+        self.carousel_vertical_position = self.config_data.get('carousel_vertical_position', 50)
+        main_layout.addStretch(0)
+        self._carousel_top_stretch_index = main_layout.count() - 1
         self.carousel_container = QWidget()
         self.carousel_container.setFixedHeight(self.scaling.scale(310))
         visible_width = (5 * self.scaling.scale(400)) + (4 * self.scaling.scale(5))
@@ -804,11 +880,21 @@ class TVLauncher(QMainWindow):
         
         main_layout.addWidget(self.carousel_container, alignment=Qt.AlignmentFlag.AlignCenter)
         main_layout.addSpacing(20)
-        main_layout.addStretch(1)
-        menu_container = QWidget()
+        main_layout.addStretch(0)
+        self._carousel_bottom_stretch_index = main_layout.count() - 1
+        self.main_layout = main_layout
+        self.set_carousel_vertical_position(self.carousel_vertical_position)
+        # menu_container e instructions NON vengono più messi dentro
+        # main_layout: sono overlay ancorati al bordo inferiore della
+        # finestra (vedi _position_bottom_overlay), così restano sempre
+        # a piena dimensione/opacità come feedback visivo, anche quando
+        # lo slider spinge il carosello alla massima profondità (in quel
+        # caso è il carosello a poter finire sotto/dietro la barra, non
+        # il contrario).
+        menu_container = QWidget(self)
         menu_container.setStyleSheet(Styles.TRANSPARENT)
         menu_layout = QHBoxLayout(menu_container)
-        menu_layout.setContentsMargins(0, 0, 0, self.scaling.scale(20))
+        menu_layout.setContentsMargins(0, 0, 0, self.scaling.scale(12))
         menu_layout.addStretch()
         button_widget = QWidget()
         button_widget.setStyleSheet(Styles.menu_bar_container(self.scaling.scale(32)))
@@ -865,12 +951,27 @@ class TVLauncher(QMainWindow):
         
         menu_layout.addWidget(button_widget)
         menu_layout.addStretch()
-        main_layout.addWidget(menu_container)
-        instructions = QLabel("Navigate: ← → ↑ ↓ | Launch: Enter/A | Edit: E/X | Delete: Del/Y | Settings: S/Start | Search: F/LB | Exit: Esc/B")
+        instructions = QLabel(
+            "Navigate: ← → ↑ ↓ | Launch: Enter/A | Edit: E/X | Delete: Del/Y | Settings: S/Start | Search: F/LB | Exit: Esc/B",
+            self
+        )
         instructions.setStyleSheet(Styles.instructions(self.scaling.scale_font(11)))
         instructions.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(instructions)
-        main_layout.addSpacing(8)
+
+        # Riferimenti per poter ancorare barra menu + istruzioni al bordo
+        # inferiore della finestra (stile overlay), indipendentemente dallo
+        # stretch del carosello: restano sempre visibili a dimensione piena
+        # come feedback per l'utente, anche col carosello alla massima
+        # profondità (in quel caso è il carosello a poter finire dietro la
+        # barra, non il contrario).
+        self.menu_container = menu_container
+        self.instructions_label = instructions
+        menu_container.show()
+        instructions.show()
+        menu_container.raise_()
+        instructions.raise_()
+        self._position_bottom_overlay()
+
         self.showFullScreen()
         self.mouse_touch = integrate_mouse_touch(self)
    
@@ -914,6 +1015,7 @@ class TVLauncher(QMainWindow):
             'sound_effects': self.config_data.get('sound_effects', False),
             'fullscreen': self.config_data.get('fullscreen', True),
             'show_weather': self.config_data.get('show_weather', False),
+            'carousel_vertical_position': self.config_data.get('carousel_vertical_position', 50),
         }
         config_data['weather_city'] = self.config_data.get('weather_city', 'Milan')
         config_data['weather_country_code'] = self.config_data.get('weather_country_code', 'IT')
@@ -926,6 +1028,11 @@ class TVLauncher(QMainWindow):
             config_data['background'] = self.config_data.get('background', '')
             config_data['auto_change_wallpaper'] = self.config_data.get('auto_change_wallpaper', False)
             config_data['wallpaper_interval'] = self.config_data.get('wallpaper_interval', 180000)
+
+        if hasattr(self, 'video_wallpaper_manager') and self.video_wallpaper_manager is not None:
+            config_data['video_wallpaper'] = self.video_wallpaper_manager.get_config()
+        else:
+            config_data['video_wallpaper'] = self.config_data.get('video_wallpaper', {})
         
         if hasattr(self, 'category_manager'):
             config_data = self.category_manager.save_categories(config_data)
@@ -935,7 +1042,13 @@ class TVLauncher(QMainWindow):
     
     def refresh_widgets_from_config(self):
         self.config_data = self.load_config()
-        
+
+        if hasattr(self, 'video_wallpaper_manager') and self.video_wallpaper_manager is not None:
+            was_enabled = self.video_wallpaper_manager.enabled
+            self.video_wallpaper_manager.load_config(self.config_data)
+            if self.video_wallpaper_manager.enabled != was_enabled:
+                self.video_wallpaper_manager.toggle_enabled(self.video_wallpaper_manager.enabled)
+
         if hasattr(self, 'weather_widget') and self.weather_widget:
             weather_city = self.config_data.get('weather_city', 'Milan')
             weather_country = self.config_data.get('weather_country_code', 'IT')
@@ -1620,6 +1733,8 @@ class TVLauncher(QMainWindow):
             self.launched_process = process.pid
             self.disable_inputs()
             self.window_manager.on_app_launch()
+            if hasattr(self, 'video_wallpaper_manager'):
+                self.video_wallpaper_manager.pause_for_app_focus()
             self.process_check_timer = QTimer()
             self.process_check_timer.timeout.connect(self.check_launched_process)
             self.process_check_timer.start(1000)
@@ -1764,6 +1879,8 @@ class TVLauncher(QMainWindow):
     def closeEvent(self, event):
         if hasattr(self, 'background_manager'):
             self.background_manager.cleanup()
+        if hasattr(self, 'video_wallpaper_manager'):
+            self.video_wallpaper_manager.cleanup()
         if self.download_worker and self.download_worker.isRunning():
             self.download_worker.stop()
             self.download_worker.wait(1000)
@@ -1779,6 +1896,15 @@ class TVLauncher(QMainWindow):
 
 
 def main():
+    # DEVE essere impostato PRIMA di creare QApplication: senza questo flag,
+    # avere un QOpenGLWidget (il video wallpaper via render API di mpv) come
+    # figlio nella stessa finestra dei tile costringe Qt a un continuo
+    # cambio di contesto OpenGL ad ogni repaint, rallentando anche le
+    # animazioni dei tile e l'apertura dei menu (non solo il video). Questo
+    # flag fa condividere un unico contesto OpenGL a tutti i widget
+    # dell'app, eliminando quell'overhead.
+    QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True)
+
     app = QApplication(sys.argv)
     icon_path = "assets/icons/logo48.png"
     if Path(icon_path).exists():
@@ -1799,6 +1925,12 @@ def main():
     launcher.show()
     launcher.setFocus()
     launcher.activateWindow()
+
+    if hasattr(launcher, 'video_wallpaper_manager'):
+        # mpv va embeddato SOLO dopo che la finestra è visibile,
+        # altrimenti l'aggancio al window handle produce schermo nero.
+        QTimer.singleShot(150, launcher.video_wallpaper_manager.start_deferred)
+
     sys.exit(app.exec())
 
 
