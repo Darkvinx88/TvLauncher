@@ -453,6 +453,23 @@ class TVLauncher(QMainWindow):
         self.tiles = []
         self.menu_button_index = 0
         self.is_in_menu = False
+        # --- Sistema "pallini a scomparsa" ---
+        # menu_bar_needs_reveal: True quando la posizione attuale del
+        # carosello è abbastanza "bassa" da intersecare la barra pulsanti
+        # (restart/sleep/off/close). In quel caso la barra parte nascosta
+        # fuori schermo e va fatta comparire/scomparire con un'animazione
+        # quando l'utente entra/esce dal menu (freccia giù/su).
+        # Se invece il carosello è posizionato "alto" (nessuna
+        # intersezione) la barra resta sempre fissa e visibile come prima,
+        # senza alcuna animazione.
+        self.menu_bar_needs_reveal = False
+        self.menu_bar_visible = True
+        self.menu_bar_animation = None
+        self.reveal_animation_group = None
+        self._menu_container_shown_pos = None
+        self._menu_container_hidden_pos = None
+        self._carousel_rest_pos = None
+        self._carousel_revealed_pos = None
         self.joystick_notification = None
         self.animation_group = None
         self.is_animating = False
@@ -617,17 +634,21 @@ class TVLauncher(QMainWindow):
         Non modifica dimensioni o aspect ratio delle tile: cambia solo la posizione verticale
         tramite gli stretch factor sopra/sotto il carousel_container.
 
-        Il valore grezzo dello slider (0-100) viene rimappato internamente su
-        un intervallo 0-95: il 100% dello slider corrisponde quindi a quella
-        che prima era la profondità massima al 95%, perché oltre quel punto
-        il carosello iniziava a sovrapporsi troppo con la barra pulsanti in
-        basso.
+        Il valore grezzo dello slider (0-100) copre ora l'intero range di
+        profondità disponibile: il carosello può scendere anche oltre il
+        vecchio limite del 95%, fino quasi a toccare la barra pulsanti in
+        basso. Quando la profondità supera una soglia che farebbe
+        intersecare il carosello con la barra pulsanti (i "pallini"
+        restart/sleep/off/close), la barra viene nascosta automaticamente
+        a riposo e ricompare solo con l'animazione a scomparsa quando
+        l'utente entra nel menu (vedi menu_bar_needs_reveal / 
+        _update_menu_bar_overlap_state / _animate_menu_bar).
         """
         value = max(0, min(100, int(value)))
         self.carousel_vertical_position = value
         self.config_data['carousel_vertical_position'] = value
 
-        effective_max = 95
+        effective_max = 100
         effective_value = int(round(value * effective_max / 100))
 
         if hasattr(self, 'main_layout') and hasattr(self, '_carousel_top_stretch_index'):
@@ -635,12 +656,18 @@ class TVLauncher(QMainWindow):
             self.main_layout.setStretch(self._carousel_bottom_stretch_index, 100 - effective_value)
         self.save_config()
 
+        # Lo stretch cambia la geometria del carosello solo al prossimo giro
+        # di event loop: rimandiamo il ricalcolo della soglia di
+        # sovrapposizione con la barra pulsanti allo stesso modo di come si
+        # fa già per il widget categorie qualche riga sotto.
+        if hasattr(self, 'menu_container'):
+            QTimer.singleShot(0, lambda: self._update_menu_bar_overlap_state())
+
         # Il cambio di stretch factor aggiorna la geometria del carosello
         # solo al prossimo giro di event loop: rimandiamo di conseguenza il
         # riposizionamento del widget categorie (che deve seguirlo) con un
         # singleShot(0), così legge la geometria già aggiornata.
         if hasattr(self, 'category_selector'):
-            from PyQt6.QtCore import QTimer
             from category_manager import _position_category_selector
             QTimer.singleShot(0, lambda: _position_category_selector(self))
 
@@ -666,14 +693,136 @@ class TVLauncher(QMainWindow):
 
         menu_h = menu_container.sizeHint().height()
         menu_y = instructions.y() - menu_h
-        menu_container.setGeometry(0, menu_y, win_w, menu_h)
+        # Posizione "normale"/visibile della barra pulsanti: la salviamo
+        # sempre, indipendentemente dal fatto che in questo momento la
+        # barra sia nascosta o meno, così le animazioni sanno sempre dove
+        # deve arrivare/partire.
+        self._menu_container_shown_pos = QPoint(0, menu_y)
+        self._menu_container_hidden_pos = QPoint(0, win_h + self.scaling.scale(10))
+
+        if self.menu_bar_visible:
+            menu_container.setGeometry(0, menu_y, win_w, menu_h)
+        else:
+            menu_container.setGeometry(
+                self._menu_container_hidden_pos.x(), self._menu_container_hidden_pos.y(),
+                win_w, menu_h
+            )
 
         menu_container.raise_()
         instructions.raise_()
 
+    def _update_menu_bar_overlap_state(self):
+        """Ricalcola se la posizione a riposo del carosello interseca la
+        barra pulsanti in basso, e prepara le due coppie di posizioni
+        (riposo/rivelata) per carosello e barra pulsanti. Se non siamo
+        con il focus sul menu, riporta entrambi allo stato "a riposo"
+        istantaneamente (non è un'animazione di navigazione: qui si
+        aggiorna solo lo stato di base dopo un resize o un cambio slider).
+
+        - needs_reveal True  -> il carosello a riposo è abbastanza basso
+          da toccare la barra: barra nascosta, carosello nella sua
+          posizione più bassa possibile (usa tutto lo schermo per il
+          video). Pallini e carosello salgono insieme solo quando serve
+          (freccia giù) e tornano giù insieme quando non serve più
+          (freccia su).
+        - needs_reveal False -> nessuna intersezione, tutto fisso e
+          visibile come nel comportamento originale, nessuna animazione.
+        """
+        if not hasattr(self, 'carousel_container') or not hasattr(self, 'menu_container'):
+            return
+        if self._menu_container_shown_pos is None:
+            return
+        if self.is_in_menu:
+            # Col focus sui pulsanti non tocchiamo nulla: le posizioni le
+            # gestisce l'animazione di ingresso/uscita del menu.
+            return
+
+        # Posizione a riposo del carosello = dove lo mette il layout in
+        # base allo slider (self.carousel_container non viene mai
+        # spostato manualmente fuori da uno stato "in menu").
+        self._carousel_rest_pos = QPoint(self.carousel_container.pos())
+        carousel_h = self.carousel_container.height()
+        overlap_margin = self.scaling.scale(10)
+
+        carousel_bottom_y = self.carousel_container.mapTo(
+            self, QPoint(0, carousel_h)
+        ).y()
+        overlaps = (carousel_bottom_y + overlap_margin) > self._menu_container_shown_pos.y()
+        # I pallini sono sempre a scomparsa, indipendentemente dalla
+        # posizione del carosello: needs_reveal è quindi sempre True.
+        # "overlaps" serve solo a decidere se il carosello deve muoversi
+        # insieme a loro (se c'è intersezione reale) oppure restare fermo
+        # (se il carosello è già alto e non tocca la barra).
+        self.menu_bar_needs_reveal = True
+
+        if overlaps:
+            # Il carosello "rivelato" sale appena sopra la barra pulsanti,
+            # quel tanto che basta a non intersecarla.
+            revealed_y = self._menu_container_shown_pos.y() - carousel_h - overlap_margin
+            revealed_y = min(revealed_y, self._carousel_rest_pos.y())
+            self._carousel_revealed_pos = QPoint(self._carousel_rest_pos.x(), revealed_y)
+        else:
+            # Nessuna intersezione: il carosello non deve muoversi, solo
+            # la barra pulsanti compare/scompare.
+            self._carousel_revealed_pos = QPoint(self._carousel_rest_pos)
+
+        # A riposo (fuori menu) tutto torna/resta nello stato base: il
+        # carosello alla sua posizione impostata dallo slider, la barra
+        # pulsanti sempre nascosta.
+        self.carousel_container.move(self._carousel_rest_pos)
+        if self.menu_bar_visible:
+            self.menu_bar_visible = False
+            self.menu_container.move(self._menu_container_hidden_pos)
+
+    def _animate_reveal(self, show: bool):
+        """Anima insieme carosello e barra pulsanti (i "pallini") quando
+        c'è intersezione: entrambi salgono per rivelare i pulsanti
+        (show=True) o scendono per nasconderli di nuovo (show=False).
+        Se non c'è intersezione (menu_bar_needs_reveal False) questo
+        metodo non va nemmeno chiamato: tutto resta fisso come prima.
+        """
+        if self._menu_container_shown_pos is None or self._carousel_rest_pos is None:
+            return
+        if self.reveal_animation_group is not None:
+            self.reveal_animation_group.stop()
+
+        self.menu_container.show()
+        group = QParallelAnimationGroup(self)
+
+        menu_anim = QPropertyAnimation(self.menu_container, b"pos")
+        menu_anim.setDuration(280)
+        menu_anim.setStartValue(self.menu_container.pos())
+        menu_anim.setEndValue(
+            self._menu_container_shown_pos if show else self._menu_container_hidden_pos
+        )
+        menu_anim.setEasingCurve(
+            QEasingCurve.Type.OutCubic if show else QEasingCurve.Type.InCubic
+        )
+        group.addAnimation(menu_anim)
+
+        carousel_anim = QPropertyAnimation(self.carousel_container, b"pos")
+        carousel_anim.setDuration(280)
+        carousel_anim.setStartValue(self.carousel_container.pos())
+        carousel_anim.setEndValue(
+            self._carousel_revealed_pos if show else self._carousel_rest_pos
+        )
+        carousel_anim.setEasingCurve(
+            QEasingCurve.Type.OutCubic if show else QEasingCurve.Type.InCubic
+        )
+        group.addAnimation(carousel_anim)
+
+        def _on_finished():
+            self.menu_bar_visible = show
+            self.reveal_animation_group = None
+
+        group.finished.connect(_on_finished)
+        self.reveal_animation_group = group
+        group.start()
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._position_bottom_overlay()
+        self._update_menu_bar_overlap_state()
 
     def update_clock(self):
         from datetime import datetime
@@ -759,7 +908,7 @@ class TVLauncher(QMainWindow):
             self.scaling.scale(5),
             self.scaling.scale(48),
             self.scaling.scale(5),
-            self.scaling.scale(32)
+            self.scaling.scale(8)
         )
         main_layout.setSpacing(0)
         header_layout = QHBoxLayout()
@@ -879,7 +1028,7 @@ class TVLauncher(QMainWindow):
         self.tile_spacing = self.scaling.scale(17)
         
         main_layout.addWidget(self.carousel_container, alignment=Qt.AlignmentFlag.AlignCenter)
-        main_layout.addSpacing(20)
+        main_layout.addSpacing(0)
         main_layout.addStretch(0)
         self._carousel_bottom_stretch_index = main_layout.count() - 1
         self.main_layout = main_layout
@@ -971,6 +1120,9 @@ class TVLauncher(QMainWindow):
         menu_container.raise_()
         instructions.raise_()
         self._position_bottom_overlay()
+        # Stato iniziale: se la posizione del carosello salvata in config
+        # è già abbastanza "bassa", la barra pulsanti parte nascosta.
+        QTimer.singleShot(0, self._update_menu_bar_overlap_state)
 
         self.showFullScreen()
         self.mouse_touch = integrate_mouse_touch(self)
@@ -1786,6 +1938,8 @@ class TVLauncher(QMainWindow):
                 self.sound_manager.navigate()
                 self.is_in_menu = True
                 self.menu_button_index = 0
+                if self.menu_bar_needs_reveal and not self.menu_bar_visible:
+                    self._animate_reveal(True)
                 self.update_menu_focus()
 
         elif key == Qt.Key.Key_Up:
@@ -1793,6 +1947,8 @@ class TVLauncher(QMainWindow):
                 self.sound_manager.navigate()
                 self.is_in_menu = False
                 self._reset_menu_styles()
+                if self.menu_bar_needs_reveal and self.menu_bar_visible:
+                    self._animate_reveal(False)
 
         elif key == Qt.Key.Key_Right:
             if self.is_in_menu:
