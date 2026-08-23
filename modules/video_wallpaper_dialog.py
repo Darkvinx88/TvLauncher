@@ -30,30 +30,44 @@ class VideoWallpaperSettingsDialog(QDialog):
     def __init__(self, parent, video_manager, scaling=None):
         super().__init__(parent)
         self.video_manager = video_manager
+        # Se non viene passato uno scaling, ne creiamo uno di fallback
+        # così il dialog resta comunque responsive anche se richiamato
+        # da un punto che non lo passa esplicitamente.
+        if scaling is None:
+            from modules.responsive_scaling import ResponsiveScaling
+            scaling = ResponsiveScaling()
         self.scaling = scaling
+        s = self.scaling
         self.setWindowTitle("Video Wallpaper")
         self.setModal(True)
-        self.resize(600, 680)
+        self.resize(s.scale(600), s.scale(680))
 
-        self.setStyleSheet("""
-            QDialog { background-color: #1a1a1a; }
-            QLabel { color: white; }
-            QComboBox, QSpinBox, QLineEdit {
+        self.setStyleSheet(f"""
+            QDialog {{ background-color: #1a1a1a; }}
+            QLabel {{ color: white; font-size: {s.scale_font(13)}px; }}
+            QComboBox, QSpinBox, QLineEdit {{
                 background-color: #2a2a2a;
                 color: white;
                 border: 1px solid #444;
-                border-radius: 5px;
-                padding: 5px;
-            }
-            QPushButton {
+                border-radius: {s.scale(5)}px;
+                padding: {s.scale(5)}px;
+                font-size: {s.scale_font(13)}px;
+                min-height: {s.scale(22)}px;
+            }}
+            QPushButton {{
                 background-color: #2a2a2a;
                 color: white;
                 border: 1px solid #444;
-                border-radius: 6px;
-                padding: 8px 14px;
-            }
-            QPushButton:hover { background-color: #3a3a3a; }
-            QCheckBox { color: white; }
+                border-radius: {s.scale(6)}px;
+                padding: {s.scale(8)}px {s.scale(14)}px;
+                font-size: {s.scale_font(13)}px;
+            }}
+            QPushButton:hover {{ background-color: #3a3a3a; }}
+            QCheckBox {{ color: white; font-size: {s.scale_font(13)}px; }}
+            QCheckBox::indicator {{
+                width: {s.scale(18)}px;
+                height: {s.scale(18)}px;
+            }}
         """)
 
         self._category_checkboxes = {}
@@ -64,12 +78,20 @@ class VideoWallpaperSettingsDialog(QDialog):
 
     def _section_title(self, text):
         lbl = QLabel(text)
-        lbl.setStyleSheet("font-size: 15px; font-weight: bold; color: #ffffff; margin-top: 8px;")
+        s = self.scaling
+        lbl.setStyleSheet(
+            f"font-size: {s.scale_font(15)}px; font-weight: bold; "
+            f"color: #ffffff; margin-top: {s.scale(8)}px;"
+        )
         return lbl
 
     def _build_ui(self):
+        s = self.scaling
         layout = QVBoxLayout(self)
-        layout.setSpacing(12)
+        layout.setSpacing(s.scale(12))
+        layout.setContentsMargins(
+            s.scale(16), s.scale(16), s.scale(16), s.scale(16)
+        )
 
         # Enable
         self.enable_checkbox = QCheckBox("Activate Streaming Video Wallpaper")
@@ -81,7 +103,7 @@ class VideoWallpaperSettingsDialog(QDialog):
             "Requires an active internet connection."
         )
         info.setWordWrap(True)
-        info.setStyleSheet("color: #999; font-size: 11px;")
+        info.setStyleSheet(f"color: #999; font-size: {s.scale_font(11)}px;")
         layout.addWidget(info)
 
         # Qualità
@@ -109,11 +131,14 @@ class VideoWallpaperSettingsDialog(QDialog):
         layout.addWidget(self._section_title("Category (nothing selected = all)"))
         cat_scroll = QScrollArea()
         cat_scroll.setWidgetResizable(True)
-        cat_scroll.setFixedHeight(160)
-        cat_scroll.setStyleSheet("QScrollArea { border: 1px solid #444; border-radius: 6px; }")
+        cat_scroll.setFixedHeight(s.scale(160))
+        cat_scroll.setStyleSheet(
+            f"QScrollArea {{ border: 1px solid #444; border-radius: {s.scale(6)}px; }}"
+        )
 
         cat_container = QWidget()
         cat_grid = QGridLayout(cat_container)
+        cat_grid.setSpacing(s.scale(6))
         categories = self.video_manager.get_available_categories()
         for i, cat in enumerate(categories):
             cb = QCheckBox(cat)
@@ -134,10 +159,11 @@ class VideoWallpaperSettingsDialog(QDialog):
         # Stato / test
         self.status_label = QLabel("")
         self.status_label.setWordWrap(True)
-        self.status_label.setStyleSheet("color: #ffb74d; font-size: 11px;")
+        self.status_label.setStyleSheet(f"color: #ffb74d; font-size: {s.scale_font(11)}px;")
         layout.addWidget(self.status_label)
 
         test_row = QHBoxLayout()
+        test_row.setSpacing(s.scale(8))
         refresh_btn = QPushButton("Refresh catalogue")
         refresh_btn.clicked.connect(self._refresh_catalog)
         test_row.addWidget(refresh_btn)
@@ -151,12 +177,20 @@ class VideoWallpaperSettingsDialog(QDialog):
 
         # Bottoni finali
         btn_row = QHBoxLayout()
+        btn_row.setSpacing(s.scale(8))
         cancel_btn = QPushButton("Cancel")
         cancel_btn.clicked.connect(self.reject)
         save_btn = QPushButton("Save")
-        save_btn.setStyleSheet("""
-            QPushButton { background-color: #2a2a2a; border: 1px solid #444; }
-            QPushButton:hover { background-color: #3a3a3a; }
+        save_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #2a2a2a;
+                border: 1px solid #444;
+                border-radius: {s.scale(6)}px;
+                padding: {s.scale(8)}px {s.scale(14)}px;
+                font-size: {s.scale_font(13)}px;
+                color: white;
+            }}
+            QPushButton:hover {{ background-color: #3a3a3a; }}
         """)
         save_btn.clicked.connect(self._save_and_close)
         btn_row.addWidget(cancel_btn)
