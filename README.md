@@ -9,14 +9,14 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 </p>
 
 
-<img width="1920" height="1080" alt="Screenshot (461)" src="https://github.com/user-attachments/assets/6ba01444-9f31-4d25-bd62-c493a98d7d9a" />
+<img width="1920" height="1080" alt="Screenshot (485)" src="https://github.com/user-attachments/assets/6cb447d9-5c21-4beb-9f15-e8aa3d2a13e9" />
+
 
 
 
 
 ## Features
 
-### Beautiful Interface
 - **Full-screen TV-Mode** - Console-style carousel with smooth animations
 - **System Menu** - Press `S` or `Start` button to access the system Menu
 - **Responsive Scaling** - Automatically adapts to any screen resolution (from 720p to 4K+)
@@ -30,44 +30,28 @@ A sleek, console-style application launcher for Windows and Linux with gamepad s
 - **Customizable Controls** - Remap any keyboard key or remote button to your liking
 - **Parental Control System** - Lock the Launcher with a PIN code
 - **Streaming Video Wallpapers** - Projectivy Overflight-style animated backgrounds, streamed directly (no permanent download)
-- **Movable Launcher Layout** - The carousel can now be shifted vertically to leave room for video wallpapers without overlapping content
+- **Movable Launcher Layout** - The carousel can now be shifted vertically to leave room for video wallpapers 
+- **Auto-hiding Bottom Bar** - The system button bar (Restart/Sleep/Shutdown/Close) stays hidden off-screen at rest and slides in only when you navigate down to it
 
 ## Screenshots
 
-<img width="1920" height="1080" alt="Screenshot (339)" src="https://github.com/user-attachments/assets/b9c74376-fc18-4be8-8c99-639de0777a43" />
-
+<img width="1920" height="1080" alt="Screenshot (483)" src="https://github.com/user-attachments/assets/a5acace8-5ab7-462a-9584-a9f6db3cad33" />
 
 *System Menu*
 
+<img width="1920" height="1080" alt="Screenshot (484)" src="https://github.com/user-attachments/assets/ba0fcca7-3907-4a26-b752-a46fb4449818" />
 
-<img width="1920" height="1080" alt="Screenshot (340)" src="https://github.com/user-attachments/assets/b77ce772-d9d2-48a4-bfe9-f3e8632b71dc" />
+*Key Mapper*
 
-
-
-*Key Mapper and battery Widget*
-
-
-
-<img width="1920" height="1080" alt="Screenshot (346)" src="https://github.com/user-attachments/assets/eea66daa-3d08-42e0-a047-0d3bad988dd7" />
-
-
+<img width="1920" height="1080" alt="Screenshot (482)" src="https://github.com/user-attachments/assets/ca9dfbfb-8171-4063-af7c-07a1e82787f0" />
 
 *Parental Control*
 
-
-
-
-
-https://github.com/user-attachments/assets/80400516-e3de-46ce-852c-f109591d8e28
-
-
-
-
-
-
-
+https://github.com/user-attachments/assets/c06e22da-7dd1-4599-bb2a-81425312517c
 
 *In motion*
+
+
 
 ### Input Support
 - **Gamepad Compatible** - Xbox, PlayStation, or any standard controller
@@ -107,7 +91,7 @@ https://github.com/user-attachments/assets/80400516-e3de-46ce-852c-f109591d8e28
 - **Manual Download Button** - Download covers for existing apps at any time
 - **Smart Auto-download Logic** - Automatically fetches images when adding apps
 - **Local Image Support** - Use your own custom images
-- 
+  
 ## Video Wallpapers
 
 TV Launcher supports animated, streaming video wallpapers in the style of Projectivy Overflight.
@@ -121,6 +105,7 @@ TV Launcher supports animated, streaming video wallpapers in the style of Projec
   - Custom catalogue URL, with a one-click "restore default" option
   - Catalogue refresh and link validation, plus a "Test/Try video" button to preview instantly
 - **Vertical layout shift:** with video wallpapers enabled, the launcher carousel can be moved vertically to leave clean space for the video, similar to Projectivy Launcher on Android TV
+- **Auto-hiding button bar:** the system button bar (Restart/Sleep/Shutdown/Close) stays hidden at rest and slides into view only when navigated to, maximizing the visible video area
 
 ### System Controls
 - **Settings Menu** Comprehensive configuration panel with:
@@ -132,20 +117,25 @@ TV Launcher supports animated, streaming video wallpapers in the style of Projec
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
-### New in Version 1.4
+### New in Version 1.4.1
 
 - **Added**
 
-  - **Streaming Video Wallpapers**
-     - Projectivy Overflight-style animated video backgrounds, streamed live (no permanent download)
-     - Fully configurable via Settings → Video Wallpaper: quality (1080p/1080p HDR/4K/4K HDR/auto), rotation interval, mute toggle, category filters, and custom catalogue URL
-     - Built-in catalogue refresh, link validation, and instant "Test/Try video" preview
-     - Requires `libmpv` (bundled on Windows, installable via `installer.sh` on Linux)
+  - **Auto-hiding System Button Bar**
+     - The bottom button bar (Restart/Sleep/Shutdown/Close) is now hidden off-screen at rest, giving the video wallpaper more usable screen space
+     - Press Down to slide it into view, press Up to slide it back out — same D-Pad/keyboard flow as before, just animated
+     - If the carousel is positioned low enough to overlap the button bar's area, the carousel now rises together with the bar when revealed, and drops back down together when hidden, so nothing ever overlaps
+     - If the carousel is positioned higher up with no overlap, it stays perfectly still — only the button bar animates in/out
+  - **Extended Carousel Vertical Range**
+     - The vertical position slider (Settings → Layout) can now push the carousel further down than before, reclaiming the screen space previously reserved for the always-visible button bar
+  - **Responsive Video Wallpaper Dialog**
+     - The Video Wallpaper settings dialog (Settings → Video Wallpaper) is now fully resolution-aware: window size, fonts, padding, and checkbox indicators all scale correctly on high-resolution displays (4K and above) instead of rendering tiny
 
-  - **Movable Launcher Layout**
-     - The carousel can now be shifted vertically to leave clean space for video wallpapers, similar to Projectivy Launcher on Android TV
-     
-      
+- **Fixed**
+
+  - Fixed a crash (`UnboundLocalError` on `QTimer`) that could occur when adjusting the carousel vertical position slider
+
+           
 ## Requirements
 
 - **Operating System:** Windows 10/11 or Linux (Ubuntu 20.04+, Fedora, Arch, etc.)
@@ -590,4 +580,3 @@ Made with ❤️ by Darkvinx88
     <img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' />
   </a>
 </p>
-
