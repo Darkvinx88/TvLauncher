@@ -1,4 +1,4 @@
-# Maintainer: Darkvinx88 <email here>
+# Maintainer: Darkvinx88
 pkgname=tvlauncher
 pkgver=1.4.2
 pkgrel=1
