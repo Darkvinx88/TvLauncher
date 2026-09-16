@@ -117,23 +117,18 @@ TV Launcher supports animated, streaming video wallpapers in the style of Projec
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
-### New in Version 1.4.1
-
-- **Added**
-
-  - **Auto-hiding System Button Bar**
-     - The bottom button bar (Restart/Sleep/Shutdown/Close) is now hidden off-screen at rest, giving the video wallpaper more usable screen space
-     - Press Down to slide it into view, press Up to slide it back out — same D-Pad/keyboard flow as before, just animated
-     - If the carousel is positioned low enough to overlap the button bar's area, the carousel now rises together with the bar when revealed, and drops back down together when hidden, so nothing ever overlaps
-     - If the carousel is positioned higher up with no overlap, it stays perfectly still — only the button bar animates in/out
-  - **Extended Carousel Vertical Range**
-     - The vertical position slider (Settings → Layout) can now push the carousel further down than before, reclaiming the screen space previously reserved for the always-visible button bar
-  - **Responsive Video Wallpaper Dialog**
-     - The Video Wallpaper settings dialog (Settings → Video Wallpaper) is now fully resolution-aware: window size, fonts, padding, and checkbox indicators all scale correctly on high-resolution displays (4K and above) instead of rendering tiny
+### New in Version 1.4.2
 
 - **Fixed**
 
-  - Fixed a crash (`UnboundLocalError` on `QTimer`) that could occur when adjusting the carousel vertical position slider
+  - **Category Rename/Delete Not Updating Apps**
+     - Renaming a category no longer leaves apps pointing at the old name — every app tagged with it is now automatically re-pointed to the new name
+     - Deleting a category now actually moves its apps to "Other" as the confirmation dialog promises, instead of leaving them stuck under a category that no longer exists
+  - **Key Mappings Backup/Restore/Reset Using Wrong File**
+     - Backup (export), Restore (import), and "Reset to Defaults" now all read/write the same key mappings file the running Key Remapper actually uses
+     - Previously these three features reconstructed the file path independently and could silently target a different file than the live one (since the launcher changes its working directory to its install folder at startup), making restores appear to succeed while key mappings stayed unchanged, and resets appear to do nothing
+  - Removed a broken, unused code path in the Category Manager that referenced a function which didn't exist, and a similar leftover reference in the gamepad reorder-mode handler 
+  - Applies to both Windows and Linux builds
 
            
 ## Requirements
