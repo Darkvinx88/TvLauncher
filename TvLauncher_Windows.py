@@ -1188,6 +1188,15 @@ class TVLauncher(QMainWindow):
         
         if hasattr(self, 'category_manager'):
             config_data = self.category_manager.save_categories(config_data)
+        elif 'categories' in self.config_data:
+            # save_config() puo' essere chiamato prima che integrate_categories()
+            # crei self.category_manager (es. durante init_ui(), che chiama
+            # set_carousel_vertical_position() -> save_config()). Senza questo
+            # fallback, la chiave 'categories' spariva dal file scritto in
+            # quel momento -> al successivo CategoryManager(...) mancava la
+            # chiave nel json e si ricadeva sempre sulle categorie di default,
+            # cancellando ogni rinomina fatta nella sessione precedente.
+            config_data['categories'] = self.config_data['categories']
         
         with open(self.config_file, 'w') as f:
             json.dump(config_data, f, indent=2)
@@ -2033,6 +2042,14 @@ class TVLauncher(QMainWindow):
         self.activateWindow()
 
     def closeEvent(self, event):
+        # Senza questa chiamata, qualunque modifica non ancora persistita
+        # esplicitamente (es. rinomina categoria fatta e non seguita da
+        # un salvataggio immediato) andava persa alla chiusura del
+        # launcher, facendo tornare tutto allo stato precedente al riavvio.
+        try:
+            self.save_config()
+        except Exception as e:
+            print(f"⚠️ Could not save config on close: {e}")
         if hasattr(self, 'background_manager'):
             self.background_manager.cleanup()
         if hasattr(self, 'video_wallpaper_manager'):
