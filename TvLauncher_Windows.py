@@ -22,6 +22,7 @@ from modules.app_reorder import integrate_reorder_mode
 from modules.search_widget import QuickSearchWidget
 from modules.joystick_notification import show_joystick_connected, show_joystick_disconnected
 from modules.program_scanner import ProgramScanner, ProgramScanDialog
+from modules.uwp_support import is_uwp_path, launch_uwp, UWPProcessTracker
 from modules.settings_menu import SettingsMenu
 from modules.window_manager import WindowManager
 from modules.mouse_touch_manager import integrate_mouse_touch
@@ -474,6 +475,7 @@ class TVLauncher(QMainWindow):
         self.animation_group = None
         self.is_animating = False
         self.launched_process = None
+        self.uwp_tracker = None
         self.process_check_timer = None
         self.inputs_enabled = True
 
@@ -544,7 +546,7 @@ class TVLauncher(QMainWindow):
                 needs_update = True
             elif icon_path == app_path:
                 needs_update = True
-            elif icon_path.lower().endswith('.exe'):
+            elif icon_path.lower().endswith('.exe') or 'uwp_icons' in icon_path:
                 needs_update = True
             elif not Path(icon_path).exists():
                 needs_update = True
@@ -857,6 +859,10 @@ class TVLauncher(QMainWindow):
         print("Inputs enabled - Launcher in focus")
    
     def check_launched_process(self):
+        if self.uwp_tracker is not None:
+            if self.uwp_tracker.is_finished():
+                self.on_app_closed()
+            return
         if self.launched_process is None:
             return
         try:
@@ -869,6 +875,7 @@ class TVLauncher(QMainWindow):
     def on_app_closed(self):
         print("App closed - Re-enabling inputs")
         self.launched_process = None
+        self.uwp_tracker = None
         if self.process_check_timer:
             self.process_check_timer.stop()
             self.process_check_timer = None
@@ -1301,7 +1308,7 @@ class TVLauncher(QMainWindow):
                 needs_update = True
             elif icon_path == app_path:
                 needs_update = True
-            elif icon_path.lower().endswith('.exe'):
+            elif icon_path.lower().endswith('.exe') or 'uwp_icons' in icon_path:
                 needs_update = True
             elif not Path(icon_path).exists():
                 needs_update = True
@@ -1890,8 +1897,14 @@ class TVLauncher(QMainWindow):
             return
         app = self.apps[self.current_index]
         try:
-            process = subprocess.Popen(app['path'], shell=True)
-            self.launched_process = process.pid
+            if is_uwp_path(app['path']):
+                launch_uwp(app['path'])
+                self.uwp_tracker = UWPProcessTracker(app['path'])
+                pid_text = "UWP"
+            else:
+                process = subprocess.Popen(app['path'], shell=True)
+                self.launched_process = process.pid
+                pid_text = process.pid
             self.disable_inputs()
             self.window_manager.on_app_launch()
             if hasattr(self, 'video_wallpaper_manager'):
@@ -1899,7 +1912,7 @@ class TVLauncher(QMainWindow):
             self.process_check_timer = QTimer()
             self.process_check_timer.timeout.connect(self.check_launched_process)
             self.process_check_timer.start(1000)
-            print(f"Launched: {app['name']} (PID: {process.pid})")
+            print(f"Launched: {app['name']} (PID: {pid_text})")
         except Exception as e:
             self._make_info_dialog("Launch Error", f"Could not launch app:<br>{str(e)}").exec()
             self.enable_inputs()
