@@ -201,8 +201,32 @@ class ProgramScanner(QThread):
             os.environ.get("ProgramFiles(x86)")
         ]
         for start_path in start_menu_paths:
-            if os.path.exists(start_path):
+            if start_path and os.path.exists(start_path):
                 self.scan_shortcuts(start_path, seen_names)
+
+        # App Microsoft Store (UWP)
+        self._scan_uwp(seen_names)
+
+    def _scan_uwp(self, seen_names):
+        """Scansiona le app del Microsoft Store"""
+        try:
+            from modules.uwp_support import scan_uwp_apps
+            from PyQt6.QtGui import QPixmap
+            self.progress_update.emit("Scanning Microsoft Store apps...")
+            for app in scan_uwp_apps():
+                if app['name'].lower() in seen_names:
+                    continue
+                seen_names.add(app['name'].lower())
+                pixmap = None
+                if app['icon']:
+                    pixmap = QPixmap(app['icon'])
+                    if pixmap.isNull():
+                        pixmap = None
+                app['icon_pixmap'] = pixmap
+                self.progress_update.emit(f"Found: {app['name']}")
+                self.program_found.emit(app)
+        except Exception as e:
+            print(f"Error scanning Store apps: {e}")
     
     def _scan_linux(self):
         """Scansiona programmi Linux dai file .desktop"""
@@ -504,6 +528,22 @@ class ProgramScanDialog(QDialog):
         else:
             self.start_scan()
 
+    def _icon_from_cache_entry(self, data):
+        """Icona per una voce di cache: immagine diretta (UWP) o icona di sistema (exe)"""
+        icon_path = data.get('icon')
+        if not icon_path:
+            return None
+        size = self._s.scale(32)
+        if icon_path.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.ico')):
+            from PyQt6.QtGui import QPixmap
+            pm = QPixmap(icon_path)
+            if not pm.isNull():
+                return QIcon(pm.scaled(size, size, Qt.AspectRatioMode.KeepAspectRatio,
+                                       Qt.TransformationMode.SmoothTransformation))
+            return None
+        icon = QFileIconProvider().icon(QFileInfo(icon_path))
+        return QIcon(icon.pixmap(size, size)) if not icon.isNull() else None
+
     def load_from_cache_fast(self):
         """Carica rapidamente dal cache"""
         if not self.cache_file.exists():
@@ -524,15 +564,9 @@ class ProgramScanDialog(QDialog):
                 item = QListWidgetItem(f"{data['name']}")
                 
                 # Carica l'icona subito per i primi 10
-                if data.get('icon'):
-                    provider = QFileIconProvider()
-                    file_info = QFileInfo(data['icon'])
-                    icon = provider.icon(file_info)
-                    
-                    if not icon.isNull():
-                        icon_size = self._s.scale(32)
-                        pixmap = icon.pixmap(icon_size, icon_size)
-                        item.setIcon(QIcon(pixmap))
+                icon = self._icon_from_cache_entry(data)
+                if icon:
+                    item.setIcon(icon)
                 
                 item.setData(Qt.ItemDataRole.UserRole, data)
                 self.list_widget.addItem(item)
@@ -588,15 +622,9 @@ class ProgramScanDialog(QDialog):
             item = QListWidgetItem(f"{data['name']}")
             
             # Carica l'icona
-            if data.get('icon'):
-                provider = QFileIconProvider()
-                file_info = QFileInfo(data['icon'])
-                icon = provider.icon(file_info)
-                
-                if not icon.isNull():
-                    icon_size = self._s.scale(32)
-                    pixmap = icon.pixmap(icon_size, icon_size)
-                    item.setIcon(QIcon(pixmap))
+            icon = self._icon_from_cache_entry(data)
+            if icon:
+                item.setIcon(icon)
             
             item.setData(Qt.ItemDataRole.UserRole, data)
             self.list_widget.addItem(item)
