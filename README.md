@@ -117,18 +117,24 @@ TV Launcher supports animated, streaming video wallpapers in the style of Projec
 - **Quick Actions** - Restart, Sleep, Shutdown, or Close launcher
 
 
-### New in Version 1.4.2
+### New in Version 1.5
+
+- **Added**
+
+  - **Microsoft Store (UWP) App Support**
+     - The program scanner now detects apps installed from the Microsoft Store and lists them alongside classic desktop programs, so they can be added to the launcher with a single selection
+     - Store apps get their icon automatically, read from the app's own manifest and cached in `%APPDATA%\TVLauncher\uwp_icons`, so it keeps working after the app updates itself
+     - Store apps can also be added manually by entering their `shell:AppsFolder\...` path in the Add/Edit App dialog
 
 - **Fixed**
 
-  - **Category Rename/Delete Not Updating Apps**
-     - Renaming a category no longer leaves apps pointing at the old name — every app tagged with it is now automatically re-pointed to the new name
-     - Deleting a category now actually moves its apps to "Other" as the confirmation dialog promises, instead of leaving them stuck under a category that no longer exists
-  - **Key Mappings Backup/Restore/Reset Using Wrong File**
-     - Backup (export), Restore (import), and "Reset to Defaults" now all read/write the same key mappings file the running Key Remapper actually uses
-     - Previously these three features reconstructed the file path independently and could silently target a different file than the live one (since the launcher changes its working directory to its install folder at startup), making restores appear to succeed while key mappings stayed unchanged, and resets appear to do nothing
-  - Removed a broken, unused code path in the Category Manager that referenced a function which didn't exist, and a similar leftover reference in the gamepad reorder-mode handler 
-  - Applies to both Windows and Linux builds
+  - Program Scanner no longer errors out on systems where the `ProgramFiles` environment variable is undefined
+  - The scanner's cached results now display PNG icons correctly, not only icons extracted from `.exe` files
+
+  - Applies to Windows builds (Store apps are a Windows-only feature)
+
+- **Note**
+  - Run a new scan (↻) after updating, since the existing scanner cache does not contain Store apps yet
 
            
 ## Requirements
