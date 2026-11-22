@@ -1,6 +1,6 @@
 # Maintainer: Darkvinx88
 pkgname=tvlauncher
-pkgver=1.4.2
+pkgver=1.5
 pkgrel=1
 epoch=
 pkgdesc="A lightweight launcher for Windows and Linux that transforms your computer into a smart TV, delivering a full leanback experience on desktop."
@@ -20,7 +20,7 @@ options=()
 install=
 changelog=
 source=("https://github.com/Darkvinx88/TvLauncher/releases/download/${pkgver}/TV_Launcher_Linux_v${pkgver}.tar.gz")
-sha256sums=('c110c6d62954057adb7ebc6c0afacde24f2a70d2bb75427216362b2624fd8106')
+sha256sums=('37babb38843224521f48a74023a4511fbacea9e5fe98389d28682230320e5991')
 
 package() {
     cd "${srcdir}"
